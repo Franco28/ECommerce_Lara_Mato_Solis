@@ -2,9 +2,6 @@ package ecommerce.database;
 
 import ecommerce.exception.DatabaseException;
 
-/**
- * Punto de entrada auxiliar para probar solamente la Etapa 3.
- */
 public class DatabaseInitializerApp {
 
     public static void main(String[] args) {

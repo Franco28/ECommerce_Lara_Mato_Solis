@@ -216,7 +216,6 @@ OrdenService
 ReclamoService
 ReporteService
 ServiceFactory
-ServiceSmokeTestApp
 ```
 
 Responsabilidades principales:
@@ -233,3 +232,38 @@ Responsabilidades principales:
 - Vaciar el carrito después de comprar.
 - Generar reclamos sobre órdenes existentes.
 - Calcular reportes básicos de gestión.
+
+## Etapa 6 - Usuarios y roles por consola
+
+Se agregó el paquete:
+
+```text
+src/main/java/ecommerce/ui
+```
+
+Clases principales:
+
+```text
+AplicacionConsola
+MenuPrincipal
+UsuarioMenu
+RolMenu
+EntradaConsola
+RolSelector
+ConsolaUtils
+```
+
+Funcionalidades disponibles desde consola:
+
+- Registrar usuario.
+- Modificar usuario.
+- Eliminar usuario.
+- Buscar usuario por ID.
+- Buscar usuario por email.
+- Listar usuarios.
+- Activar usuario.
+- Desactivar usuario.
+- Listar roles del sistema.
+- Consultar permisos asociados a cada rol.
+
+
