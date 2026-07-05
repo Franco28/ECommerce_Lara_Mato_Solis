@@ -4,7 +4,6 @@ import ecommerce.exception.DatosInvalidosException;
 
 /**
  * Validador común para evitar repetir reglas básicas en todas las entidades.
- * Las reglas complejas del negocio se ubicarán en servicios en etapas posteriores.
  */
 public final class ValidadorDominio {
 

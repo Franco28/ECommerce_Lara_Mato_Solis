@@ -108,7 +108,7 @@ Las excepciones personalizadas extienden de `EcommerceException`, que a su vez e
 
 Esto permite mantener los modelos limpios y evita llenar constructores, setters y métodos simples con firmas `throws`.
 
-Para persistencia se utiliza SQLite, se define la conexión, configuración y creación de tablas.
+Para persistencia se utiliza SQLite. En esta etapa se define la conexión, configuración y creación de tablas.
 
 ## Compilar el proyecto
 
@@ -141,8 +141,6 @@ mvn clean compile exec:java
 ```
 
 ## Etapa 4 - DAO y Factory
-
-La Etapa 4 agrega el patrón DAO sobre la infraestructura SQLite.
 
 Paquetes principales:
 
@@ -191,3 +189,47 @@ Ejemplo de uso:
 DAOFactory factory = DAOFactory.obtenerFactory();
 ProductoDAO productoDAO = factory.crearProductoDAO();
 ```
+
+
+## Etapa 5 - Servicios de negocio
+
+La Etapa 5 agrega la capa de servicios entre el menú por consola y los DAOs.
+
+Paquete principal:
+
+```text
+src/main/java/ecommerce/service
+```
+
+Servicios incluidos:
+
+```text
+SeguridadService
+UsuarioService
+CategoriaService
+ProductoService
+InventarioService
+CarritoService
+PagoService
+EnvioService
+OrdenService
+ReclamoService
+ReporteService
+ServiceFactory
+ServiceSmokeTestApp
+```
+
+Responsabilidades principales:
+
+- Validar permisos por rol.
+- Validar usuarios activos.
+- Evitar emails, categorías y productos duplicados.
+- Controlar stock disponible.
+- Registrar movimientos de inventario.
+- Administrar carrito usando productos persistidos.
+- Registrar pagos y envíos.
+- Crear órdenes desde el carrito.
+- Descontar stock al confirmar una orden.
+- Vaciar el carrito después de comprar.
+- Generar reclamos sobre órdenes existentes.
+- Calcular reportes básicos de gestión.
