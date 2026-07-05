@@ -301,6 +301,52 @@ El menú principal ya permite acceder a:
 5. Gestión de Inventario
 ```
 
+
+
+## Etapa 8 - Carrito de compras por consola
+
+Se integró el módulo de carrito dentro del menú principal.
+
+Clases agregadas en `src/main/java/ecommerce/ui`:
+
+```text
+CarritoMenu
+ClienteSelector
+```
+
+También se ampliaron:
+
+```text
+MenuPrincipal
+ConsolaUtils
+```
+
+Funcionalidades disponibles desde consola para carrito:
+
+- Seleccionar cliente activo.
+- Crear o recuperar el carrito activo del cliente seleccionado.
+- Agregar productos al carrito mediante código de producto.
+- Eliminar productos del carrito.
+- Modificar cantidades.
+- Vaciar carrito.
+- Visualizar el contenido del carrito.
+- Calcular subtotal.
+- Calcular total.
+- Listar productos disponibles para agregar al carrito.
+
+El menú principal ya permite acceder a:
+
+```text
+1. Gestión de Usuarios
+2. Gestión de Roles
+3. Gestión de Productos
+4. Gestión de Categorías
+5. Gestión de Inventario
+6. Carrito de Compras
+```
+
+El carrito utiliza productos persistidos para validar disponibilidad y stock actualizado. Las órdenes, pagos y envíos quedan para las siguientes partes del flujo de compra.
+
 ## Compilar el proyecto
 
 Con Java 17:

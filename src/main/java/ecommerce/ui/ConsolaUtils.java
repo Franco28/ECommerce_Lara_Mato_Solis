@@ -1,8 +1,10 @@
 package ecommerce.ui;
 
 import ecommerce.enums.RolUsuario;
+import ecommerce.model.Carrito;
 import ecommerce.model.Categoria;
 import ecommerce.model.InventarioMovimiento;
+import ecommerce.model.ItemCarrito;
 import ecommerce.model.Producto;
 import ecommerce.model.ProductoDigital;
 import ecommerce.model.ProductoFisico;
@@ -130,6 +132,38 @@ public final class ConsolaUtils {
                 producto.getStock(),
                 producto.calcularPrecioFinal(),
                 producto.getEstado());
+    }
+
+
+    public static void imprimirCarrito(Carrito carrito) {
+        System.out.println("Cliente: " + carrito.getCliente().getNombre() + " "
+                + carrito.getCliente().getApellido() + " - " + carrito.getCliente().getEmail());
+        System.out.println("Fecha de creación: " + carrito.getFechaCreacion());
+
+        if (carrito.estaVacio()) {
+            System.out.println("El carrito está vacío.");
+            return;
+        }
+
+        System.out.printf("%-14s %-28s %-10s %-15s %-15s%n",
+                "Código", "Producto", "Cantidad", "Precio unit.", "Subtotal");
+        System.out.println("--------------------------------------------------------------------------------------");
+
+        for (ItemCarrito item : carrito.getItems()) {
+            imprimirItemCarritoEnTabla(item);
+        }
+
+        System.out.println("--------------------------------------------------------------------------------------");
+        System.out.printf("Total: %.2f%n", carrito.calcularTotal());
+    }
+
+    public static void imprimirItemCarritoEnTabla(ItemCarrito item) {
+        System.out.printf("%-14s %-28s %-10d %-15.2f %-15.2f%n",
+                limitar(item.getProducto().getCodigo(), 14),
+                limitar(item.getProducto().getNombre(), 28),
+                item.getCantidad(),
+                item.getPrecioUnitario(),
+                item.calcularSubtotal());
     }
 
     public static void imprimirMovimientosInventario(List<InventarioMovimiento> movimientos) {
