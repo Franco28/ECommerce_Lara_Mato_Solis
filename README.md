@@ -23,6 +23,7 @@ Proyecto Java por etapas para el examen final integrador de Programación Avanza
 - [Etapa 11 - Envíos y seguimiento de pedidos](#etapa-11---envíos-y-seguimiento-de-pedidos)
 - [Etapa 12 - Reclamos, devoluciones y calificaciones](#etapa-12---reclamos-devoluciones-y-calificaciones)
 - [Etapa 13 - Reportes de gestión](#etapa-13---reportes-de-gestión)
+- [Etapa 14 - Integración final, autenticación y permisos](#etapa-14---integración-final-autenticación-y-permisos)
 - [Compilar el proyecto](#compilar-el-proyecto)
 - [Inicializar SQLite](#inicializar-sqlite)
 - [Ejecutar con Maven](#ejecutar-con-maven)
@@ -51,6 +52,16 @@ Incluye:
   - Reclamo
   - Devolucion
   - Calificacion
+
+### Decisión técnica
+
+Se decidió iniciar por el modelo de dominio antes de implementar menús, persistencia o reglas de aplicación. Esta decisión permite representar primero los conceptos centrales del negocio y evitar que la lógica quede acoplada a la consola o a la base de datos.
+
+La clase `Producto` se definió como abstracta porque el enunciado exige una jerarquía obligatoria de productos. Las clases `ProductoFisico`, `ProductoDigital` y `ProductoImportado` permiten aplicar herencia y polimorfismo: cada tipo de producto puede calcular su precio final y comportarse de manera diferente sin concentrar toda la lógica en condicionales.
+
+También se incorporaron interfaces como `Calculable`, `Mostrable`, `Descontable`, `Enviable` y `ProcesadorPago`. Esto deja contratos claros para las siguientes etapas y facilita la aplicación posterior de patrones como Strategy en pagos.
+
+---
 
 ## Etapa 2 - Excepciones personalizadas y validaciones base
 
@@ -92,6 +103,16 @@ Ese validador centraliza reglas básicas como:
 
 Las entidades principales fueron ajustadas para usar excepciones propias del dominio en lugar de depender solamente de excepciones genéricas como `IllegalArgumentException`.
 
+### Decisión técnica
+
+Se decidió crear excepciones propias para representar errores del negocio y no solamente errores técnicos. Esto permite distinguir problemas como stock insuficiente, producto inexistente, usuario inexistente o permiso denegado de errores genéricos del lenguaje.
+
+Las excepciones personalizadas extienden de `EcommerceException`, que a su vez extiende de `RuntimeException`. Esta decisión evita llenar constructores, setters y métodos simples con firmas `throws`, manteniendo los modelos más limpios. Aun así, el código conserva errores expresivos y específicos del dominio.
+
+El validador centralizado evita duplicar reglas simples en muchas clases y reduce inconsistencias entre módulos.
+
+---
+
 ## Etapa 3 - Persistencia SQLite base
 
 Se agregó infraestructura para preparar la persistencia real entre ejecuciones.
@@ -129,13 +150,15 @@ La Etapa 3 crea el esquema inicial para:
 - devoluciones,
 - calificaciones.
 
-## Decisión técnica
+### Decisión técnica
 
-Las excepciones personalizadas extienden de `EcommerceException`, que a su vez extiende de `RuntimeException`.
+Se decidió utilizar SQLite porque permite cumplir con la persistencia obligatoria entre ejecuciones sin instalar un servidor externo de base de datos.
 
-Esto permite mantener los modelos limpios y evita llenar constructores, setters y métodos simples con firmas `throws`.
+La infraestructura de base de datos se separó en clases específicas para configuración, conexión, inicialización y ejecución de scripts. Esto evita que los DAOs o servicios tengan que conocer detalles de creación de tablas.
 
-Para persistencia se utiliza SQLite. En esta etapa se define la conexión, configuración y creación de tablas.
+El esquema se dejó en `src/main/resources/database/schema.sql` para mantener la estructura de la base documentada, versionable y fácil de revisar.
+
+---
 
 ## Etapa 4 - DAO y Factory
 
@@ -187,6 +210,16 @@ DAOFactory factory = DAOFactory.obtenerFactory();
 ProductoDAO productoDAO = factory.crearProductoDAO();
 ```
 
+### Decisión técnica
+
+Se decidió aplicar el patrón DAO para aislar la persistencia del resto del sistema. De esta forma, los servicios no ejecutan SQL directamente y trabajan contra interfaces.
+
+La fábrica de DAOs permite centralizar la creación de implementaciones concretas. Actualmente la implementación utilizada es SQLite, pero el diseño permite reemplazarla por otra estrategia de persistencia sin modificar la capa de servicios.
+
+En `ProductoDAO` se reconstruyen las subclases concretas de `Producto` a partir del tipo persistido. Esto mantiene el polimorfismo aun después de recuperar los datos desde la base.
+
+---
+
 ## Etapa 5 - Servicios de negocio
 
 La Etapa 5 agrega la capa de servicios entre el menú por consola y los DAOs.
@@ -229,6 +262,16 @@ Responsabilidades principales:
 - Generar reclamos sobre órdenes existentes.
 - Calcular reportes básicos de gestión.
 
+### Decisión técnica
+
+Se decidió crear una capa de servicios para que la lógica de negocio no quede dentro de los menús ni dentro de los DAOs. Los DAOs se encargan de persistir datos, los menús de interactuar con el usuario y los servicios de aplicar reglas.
+
+Esta separación mejora la mantenibilidad del proyecto porque cada módulo tiene una responsabilidad clara. También evita que el sistema se convierta en un conjunto de CRUDs independientes: los servicios coordinan usuarios, productos, stock, carrito, órdenes, pagos y reclamos como parte de un flujo de negocio real.
+
+`ServiceFactory` centraliza la creación de servicios y reduce la duplicación de dependencias en la capa de consola.
+
+---
+
 ## Etapa 6 - Usuarios y roles por consola
 
 Se agregó el paquete:
@@ -261,6 +304,16 @@ Funcionalidades disponibles desde consola:
 - Desactivar usuario.
 - Listar roles del sistema.
 - Consultar permisos asociados a cada rol.
+
+### Decisión técnica
+
+Se decidió implementar la consola mediante clases de menú específicas y no concentrar toda la interacción en `Main`. Esto mantiene el punto de entrada simple y evita métodos extensos difíciles de mantener.
+
+Los roles se manejan mediante `RolUsuario`, evitando cadenas de texto sueltas. Esto reduce errores por escritura incorrecta y permite controlar permisos de forma consistente.
+
+La entrada de datos se centralizó en `EntradaConsola` y utilidades comunes en `ConsolaUtils` para no repetir lectura, pausas, limpieza visual y validaciones simples en cada menú.
+
+---
 
 ## Etapa 7 - Productos, categorías e inventario por consola
 
@@ -328,6 +381,16 @@ El menú principal ya permite acceder a:
 5. Gestión de Inventario
 ```
 
+### Decisión técnica
+
+Se decidió separar categorías, productos e inventario porque tienen responsabilidades distintas. La categoría clasifica productos, el producto representa el artículo comercializable y el inventario controla movimientos de stock.
+
+El stock no se modifica directamente desde cualquier parte del sistema, sino a través de `InventarioService`. Esta decisión permite registrar movimientos y controlar reglas como impedir stock negativo o egresos superiores a la existencia disponible.
+
+El menú de productos respeta la jerarquía polimórfica: al registrar o modificar un producto se conserva su tipo concreto, evitando perder información específica de productos físicos, digitales o importados.
+
+---
+
 ## Etapa 8 - Carrito de compras por consola
 
 Se integró el módulo de carrito dentro del menú principal.
@@ -371,6 +434,16 @@ El menú principal ya permite acceder a:
 ```
 
 El carrito utiliza productos persistidos para validar disponibilidad y stock actualizado. Las órdenes, pagos y envíos quedan para las siguientes partes del flujo de compra.
+
+### Decisión técnica
+
+Se decidió mantener el carrito como una estructura del flujo de compra previa a la orden. Agregar productos al carrito no descuenta stock definitivamente; el stock se descuenta recién cuando la compra se confirma.
+
+Esta decisión evita inconsistencias si el cliente abandona el carrito o modifica cantidades antes de comprar. También permite validar stock nuevamente al momento del checkout, que es el punto real donde se concreta la operación.
+
+`ClienteSelector` se incorporó para reutilizar la selección de clientes activos y no duplicar esa lógica en distintos menús.
+
+---
 
 ## Etapa 9 - Procesamiento de pagos por consola
 
@@ -432,6 +505,16 @@ El menú principal ya permite acceder a:
 6. Carrito de Compras
 8. Procesamiento de Pagos
 ```
+
+### Decisión técnica
+
+Se decidió aplicar el patrón Strategy para procesar pagos, tal como solicita la consigna. Cada medio de pago implementa `ProcesadorPago`, por lo que la lógica queda encapsulada en clases concretas.
+
+`ProcesadorPagoFactory` centraliza la creación de la estrategia correspondiente al método seleccionado. Esto evita soluciones débiles basadas en comparar textos y permite agregar nuevos métodos de pago sin modificar toda la aplicación.
+
+El módulo de pagos se integró también como operación independiente para permitir registrar, aprobar, rechazar o cancelar pagos desde consola.
+
+---
 
 ## Etapa 10 - Órdenes de compra y checkout integrado
 
@@ -523,6 +606,16 @@ El menú principal ya permite acceder a:
 8. Procesamiento de Pagos
 ```
 
+### Decisión técnica
+
+Se decidió implementar `CheckoutFacade` para coordinar el proceso completo de compra desde un único punto de aplicación. El checkout valida carrito, procesa pago, crea envío, genera la orden, descuenta stock y vacía el carrito.
+
+Esta decisión evita que el menú de consola tenga que conocer todos los pasos internos de una compra. También cumple mejor con el criterio de que el sistema no sea solamente un conjunto de CRUDs aislados, sino un proceso de negocio integrado.
+
+`OrdenCompraBuilder` se incorporó para construir órdenes de forma más clara y evitar constructores extensos con muchos parámetros.
+
+---
+
 ## Etapa 11 - Envíos y seguimiento de pedidos
 
 Se integraron los módulos de gestión de envíos y seguimiento dentro del menú principal.
@@ -600,6 +693,16 @@ El menú principal ya permite acceder a:
 9. Gestión de Envíos
 10. Seguimiento de Pedidos
 ```
+
+### Decisión técnica
+
+Se decidió separar `EnvioService` de `SeguimientoService`. El primero administra el envío y sus cambios de estado; el segundo consulta la información de seguimiento desde la perspectiva del cliente o del operador.
+
+También se agregó historial de estados para no perder información cuando un envío cambia de estado. Guardar solo el estado actual sería insuficiente para cumplir el seguimiento de pedidos, porque no permitiría reconstruir la evolución del envío.
+
+La fecha estimada se calcula en función del tipo de envío para mantener una regla simple, entendible y coherente con una aplicación de consola.
+
+---
 
 ## Etapa 12 - Reclamos, devoluciones y calificaciones
 
@@ -682,6 +785,16 @@ El menú principal ya permite acceder a:
 11. Reclamos y Devoluciones
 ```
 
+### Decisión técnica
+
+Se decidió agrupar reclamos, devoluciones y calificaciones dentro de un módulo de post compra porque todas estas operaciones dependen de una compra previa.
+
+Las devoluciones y calificaciones validan que el producto pertenezca a una orden del cliente. Esto evita operaciones inválidas, como devolver o calificar productos que no fueron comprados.
+
+Se agregaron DAOs específicos para devoluciones y calificaciones para mantener consistencia con el patrón DAO aplicado en todo el proyecto.
+
+---
+
 ## Etapa 13 - Reportes de gestión
 
 Se integró el módulo de reportes dentro del menú principal.
@@ -734,6 +847,16 @@ El menú principal ya permite acceder a:
 12. Reportes
 ```
 
+### Decisión técnica
+
+Se decidió concentrar los reportes en `ReporteService`, reutilizando la información persistida en SQLite. Esta decisión evita calcular reportes únicamente con datos en memoria y permite obtener resultados consistentes entre ejecuciones.
+
+El menú de reportes funciona como capa de presentación: muestra los resultados, pero no contiene reglas de cálculo. Esto mantiene la separación entre interfaz, servicios y persistencia.
+
+Los reportes elegidos cubren usuarios, productos, órdenes, pagos, clientes, reclamos y envíos, alineándose con los reportes mínimos exigidos por la consigna.
+
+---
+
 ## Etapa 14 - Integración final, autenticación y permisos
 
 Se agregó control de acceso al sistema antes de ingresar al menú principal.
@@ -775,6 +898,16 @@ Cliente: carrito, órdenes, seguimiento y post compra.
 Operador de Ventas: órdenes, pagos, seguimiento y post compra.
 Responsable de Logística: envíos y seguimiento.
 ```
+
+### Decisión técnica
+
+Se decidió agregar autenticación al cierre del proyecto para integrar los roles con el menú real. Hasta ese punto los roles existían en el modelo y en los servicios, pero faltaba aplicarlos sobre la operación completa del sistema.
+
+`SesionUsuarioService` mantiene el usuario autenticado durante la ejecución y permite que módulos como carrito, órdenes y post compra usen automáticamente al cliente logueado. Esto evita pedir el cliente manualmente cuando ya existe una sesión válida.
+
+La creación automática del primer administrador resuelve el problema inicial de acceso: si la base está vacía, el sistema permite crear un usuario administrador para poder comenzar a operar.
+
+---
 
 ## Compilar el proyecto
 

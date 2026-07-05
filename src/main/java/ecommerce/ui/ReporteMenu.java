@@ -1,8 +1,6 @@
 package ecommerce.ui;
 
-import ecommerce.model.Envio;
 import ecommerce.model.Producto;
-import ecommerce.model.Reclamo;
 import ecommerce.service.ReporteService;
 
 import java.util.Map;
