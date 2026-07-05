@@ -12,6 +12,7 @@ public class MenuPrincipal {
     private final CategoriaMenu categoriaMenu;
     private final InventarioMenu inventarioMenu;
     private final CarritoMenu carritoMenu;
+    private final PagoMenu pagoMenu;
 
     public MenuPrincipal(ServiceFactory serviceFactory, EntradaConsola entrada) {
         this.entrada = entrada;
@@ -31,6 +32,7 @@ public class MenuPrincipal {
                 serviceFactory.productoService(),
                 serviceFactory.usuarioService(),
                 entrada);
+        this.pagoMenu = new PagoMenu(serviceFactory.pagoService(), entrada);
     }
 
     public void mostrar() {
@@ -69,7 +71,8 @@ public class MenuPrincipal {
                 case 4 -> categoriaMenu.mostrar();
                 case 5 -> inventarioMenu.mostrar();
                 case 6 -> carritoMenu.mostrar();
-                case 7, 8, 9, 10, 11, 12 -> moduloNoDisponible();
+                case 8 -> pagoMenu.mostrar();
+                case 7, 9, 10, 11, 12 -> moduloNoDisponible();
                 case 13 -> System.out.println("Saliendo del sistema.");
                 default -> System.out.println("Opción incorrecta.");
             }

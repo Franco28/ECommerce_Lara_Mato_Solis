@@ -345,8 +345,68 @@ El menú principal ya permite acceder a:
 6. Carrito de Compras
 ```
 
-El carrito utiliza productos persistidos para validar disponibilidad y stock actualizado. Las órdenes, pagos y envíos quedan para las siguientes partes del flujo de compra.
+El carrito utiliza productos persistidos para validar disponibilidad y stock actualizado. 
 
+## Etapa 9 - Procesamiento de pagos por consola
+
+Se integró el módulo de pagos dentro del menú principal.
+
+Paquete agregado:
+
+```text
+src/main/java/ecommerce/payment
+```
+
+Clases agregadas:
+
+```text
+ProcesadorPagoFactory
+ProcesadorTarjetaCredito
+ProcesadorTarjetaDebito
+ProcesadorTransferenciaBancaria
+ProcesadorBilleteraVirtual
+ProcesadorPagoContraEntrega
+```
+
+Clases agregadas en `src/main/java/ecommerce/ui`:
+
+```text
+PagoMenu
+MetodoPagoSelector
+```
+
+También se ampliaron:
+
+```text
+PagoService
+MenuPrincipal
+ConsolaUtils
+```
+
+Funcionalidades disponibles desde consola para pagos:
+
+- Procesar pago mediante Strategy.
+- Registrar pago pendiente.
+- Buscar pago por ID.
+- Listar pagos.
+- Aprobar pago pendiente.
+- Rechazar pago.
+- Cancelar pago.
+- Eliminar pago.
+
+El procesamiento no depende de condicionales por texto. Cada método de pago tiene su propio procesador concreto y todos implementan la interfaz `ProcesadorPago`.
+
+El menú principal ya permite acceder a:
+
+```text
+1. Gestión de Usuarios
+2. Gestión de Roles
+3. Gestión de Productos
+4. Gestión de Categorías
+5. Gestión de Inventario
+6. Carrito de Compras
+8. Procesamiento de Pagos
+```
 ## Compilar el proyecto
 
 Con Java 17:

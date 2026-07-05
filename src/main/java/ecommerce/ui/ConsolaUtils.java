@@ -5,6 +5,7 @@ import ecommerce.model.Carrito;
 import ecommerce.model.Categoria;
 import ecommerce.model.InventarioMovimiento;
 import ecommerce.model.ItemCarrito;
+import ecommerce.model.Pago;
 import ecommerce.model.Producto;
 import ecommerce.model.ProductoDigital;
 import ecommerce.model.ProductoFisico;
@@ -201,6 +202,39 @@ public final class ConsolaUtils {
                 movimiento.getStockResultante(),
                 movimiento.getFecha().toLocalDate(),
                 limitar(movimiento.getMotivo(), 35));
+    }
+
+
+    public static void imprimirPagos(List<Pago> pagos) {
+        if (pagos.isEmpty()) {
+            System.out.println("No hay pagos registrados.");
+            return;
+        }
+
+        System.out.printf("%-5s %-28s %-12s %-14s %-18s%n",
+                "ID", "Método", "Monto", "Estado", "Fecha");
+        System.out.println("--------------------------------------------------------------------------------");
+
+        for (Pago pago : pagos) {
+            imprimirPagoEnTabla(pago);
+        }
+    }
+
+    public static void imprimirPago(Pago pago) {
+        System.out.println("ID: " + pago.getId());
+        System.out.println("Método de pago: " + pago.getMetodoPago());
+        System.out.printf("Monto: %.2f%n", pago.getMonto());
+        System.out.println("Estado: " + pago.getEstado());
+        System.out.println("Fecha: " + pago.getFecha());
+    }
+
+    public static void imprimirPagoEnTabla(Pago pago) {
+        System.out.printf("%-5d %-28s %-12.2f %-14s %-18s%n",
+                pago.getId(),
+                pago.getMetodoPago(),
+                pago.getMonto(),
+                pago.getEstado(),
+                pago.getFecha().toLocalDate());
     }
 
     public static void imprimirRoles() {
