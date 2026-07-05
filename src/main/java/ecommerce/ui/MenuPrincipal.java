@@ -96,6 +96,7 @@ public class MenuPrincipal {
 
     private void imprimirSesionActual() {
         Usuario usuario = sesionUsuarioService.requerirUsuarioActual();
+        ConsolaUtils.imprimirSubtitulo("Sesion actual");
         ConsolaUtils.imprimirEtiquetaValor("Usuario", usuario.getNombre() + " " + usuario.getApellido());
         ConsolaUtils.imprimirEtiquetaValor("Rol", usuario.getRol());
         System.out.println();

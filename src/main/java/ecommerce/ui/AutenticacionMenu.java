@@ -73,6 +73,7 @@ public class AutenticacionMenu {
         while (!registrado) {
             try {
                 ConsolaUtils.imprimirTitulo("CREACION DEL ADMINISTRADOR INICIAL");
+                ConsolaUtils.imprimirMensajeInfo("La base esta vacia, se requiere crear el primer administrador.");
                 String nombre = entrada.leerTexto("Nombre: ");
                 String apellido = entrada.leerTexto("Apellido: ");
                 String email = entrada.leerTexto("Email: ");

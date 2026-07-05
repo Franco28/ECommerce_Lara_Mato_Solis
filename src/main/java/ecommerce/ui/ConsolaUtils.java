@@ -18,6 +18,7 @@ import ecommerce.model.ProductoFisico;
 import ecommerce.model.ProductoImportado;
 import ecommerce.model.Usuario;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class ConsolaUtils {
@@ -31,11 +32,7 @@ public final class ConsolaUtils {
         System.out.println();
         String texto = titulo == null ? "" : titulo.trim().toUpperCase();
         int ancho = Math.max(ANCHO_TERMINAL, texto.length() + 8);
-        String linea = repetir('=', ancho);
-
-        System.out.println(linea);
-        System.out.println(centrar(texto, ancho));
-        System.out.println(linea);
+        imprimirCaja(texto, ancho, '=');
     }
 
     public static void imprimirSubtitulo(String texto) {
@@ -44,34 +41,56 @@ public final class ConsolaUtils {
         }
 
         System.out.println();
-        System.out.println(texto.toUpperCase());
-        System.out.println(repetir('-', ANCHO_TERMINAL));
+        String contenido = " " + texto.trim().toUpperCase() + " ";
+        System.out.println("+" + repetir('-', Math.max(ANCHO_TERMINAL - 2, contenido.length())) + "+");
+        System.out.println("|" + centrar(contenido, Math.max(ANCHO_TERMINAL - 2, contenido.length())) + "|");
+        System.out.println("+" + repetir('-', Math.max(ANCHO_TERMINAL - 2, contenido.length())) + "+");
     }
 
     public static void imprimirMenuOpciones(String... opciones) {
-        for (String opcion : opciones) {
-            System.out.println("  " + opcion);
+        if (opciones == null || opciones.length == 0) {
+            return;
         }
+
+        int contenidoAncho = 0;
+        for (String opcion : opciones) {
+            if (opcion != null) {
+                contenidoAncho = Math.max(contenidoAncho, opcion.length());
+            }
+        }
+
+        int ancho = Math.max(ANCHO_TERMINAL - 4, contenidoAncho + 2);
+        String borde = "+" + repetir('-', ancho + 2) + "+";
+
+        System.out.println(borde);
+        for (String opcion : opciones) {
+            String texto = opcion == null ? "" : opcion;
+            System.out.println("| " + padRight(texto, ancho) + " |");
+        }
+        System.out.println(borde);
     }
 
     public static void imprimirMensajeInfo(String mensaje) {
-        System.out.println("[INFO] " + mensaje);
+        imprimirBloqueMensaje("INFO", mensaje);
     }
 
     public static void imprimirMensajeExito(String mensaje) {
-        System.out.println("[OK] " + mensaje);
+        imprimirBloqueMensaje("OK", mensaje);
     }
 
     public static void imprimirMensajeError(String mensaje) {
-        System.out.println("[ERROR] " + mensaje);
+        imprimirBloqueMensaje("ERROR", mensaje);
     }
 
     public static void imprimirEtiquetaValor(String etiqueta, Object valor) {
-        System.out.println(etiqueta + ": " + valor);
+        String izquierda = etiqueta == null ? "" : etiqueta.trim();
+        String derecha = String.valueOf(valor);
+        int anchoEtiqueta = Math.max(18, izquierda.length());
+        System.out.printf("| %-18s : %s%n", limitar(izquierda, anchoEtiqueta), derecha);
     }
 
     public static void imprimirSeparador() {
-        System.out.println(repetir('-', ANCHO_TERMINAL));
+        System.out.println("+" + repetir('-', ANCHO_TERMINAL - 2) + "+");
     }
 
     public static void imprimirUsuarios(List<Usuario> usuarios) {
@@ -80,23 +99,33 @@ public final class ConsolaUtils {
             return;
         }
 
-        System.out.printf("%-5s %-18s %-18s %-30s %-22s %-12s%n",
-                "ID", "Nombre", "Apellido", "Email", "Rol", "Estado");
-        System.out.println("------------------------------------------------------------------------------------------------------");
-
+        List<String[]> filas = new ArrayList<>();
         for (Usuario usuario : usuarios) {
-            imprimirUsuarioEnTabla(usuario);
+            filas.add(new String[] {
+                    String.valueOf(usuario.getId()),
+                    limitar(usuario.getNombre(), 18),
+                    limitar(usuario.getApellido(), 18),
+                    limitar(usuario.getEmail(), 30),
+                    String.valueOf(usuario.getRol()),
+                    String.valueOf(usuario.getEstado())
+            });
         }
+
+        imprimirTabla(
+                new String[] {"ID", "Nombre", "Apellido", "Email", "Rol", "Estado"},
+                filas);
     }
 
     public static void imprimirUsuario(Usuario usuario) {
-        System.out.println("ID: " + usuario.getId());
-        System.out.println("Nombre: " + usuario.getNombre());
-        System.out.println("Apellido: " + usuario.getApellido());
-        System.out.println("Email: " + usuario.getEmail());
-        System.out.println("Fecha de alta: " + usuario.getFechaAlta());
-        System.out.println("Estado: " + usuario.getEstado());
-        System.out.println("Rol: " + usuario.getRol());
+        imprimirFicha("USUARIO", new String[][] {
+                {"ID", String.valueOf(usuario.getId())},
+                {"Nombre", usuario.getNombre()},
+                {"Apellido", usuario.getApellido()},
+                {"Email", usuario.getEmail()},
+                {"Fecha de alta", String.valueOf(usuario.getFechaAlta())},
+                {"Estado", String.valueOf(usuario.getEstado())},
+                {"Rol", String.valueOf(usuario.getRol())}
+        });
     }
 
     public static void imprimirUsuarioEnTabla(Usuario usuario) {
@@ -115,19 +144,28 @@ public final class ConsolaUtils {
             return;
         }
 
-        System.out.printf("%-5s %-24s %-45s %-12s%n", "ID", "Nombre", "Descripcion", "Estado");
-        System.out.println("--------------------------------------------------------------------------------------------");
-
+        List<String[]> filas = new ArrayList<>();
         for (Categoria categoria : categorias) {
-            imprimirCategoriaEnTabla(categoria);
+            filas.add(new String[] {
+                    String.valueOf(categoria.getId()),
+                    limitar(categoria.getNombre(), 24),
+                    limitar(categoria.getDescripcion(), 45),
+                    String.valueOf(categoria.getEstado())
+            });
         }
+
+        imprimirTabla(
+                new String[] {"ID", "Nombre", "Descripcion", "Estado"},
+                filas);
     }
 
     public static void imprimirCategoria(Categoria categoria) {
-        System.out.println("ID: " + categoria.getId());
-        System.out.println("Nombre: " + categoria.getNombre());
-        System.out.println("Descripcion: " + categoria.getDescripcion());
-        System.out.println("Estado: " + categoria.getEstado());
+        imprimirFicha("CATEGORIA", new String[][] {
+                {"ID", String.valueOf(categoria.getId())},
+                {"Nombre", categoria.getNombre()},
+                {"Descripcion", categoria.getDescripcion()},
+                {"Estado", String.valueOf(categoria.getEstado())}
+        });
     }
 
     public static void imprimirCategoriaEnTabla(Categoria categoria) {
@@ -144,33 +182,46 @@ public final class ConsolaUtils {
             return;
         }
 
-        System.out.printf("%-5s %-14s %-25s %-13s %-22s %-10s %-12s %-12s%n",
-                "ID", "Codigo", "Nombre", "Tipo", "Categoria", "Stock", "Precio", "Estado");
-        System.out.println("----------------------------------------------------------------------------------------------------------------");
-
+        List<String[]> filas = new ArrayList<>();
         for (Producto producto : productos) {
-            imprimirProductoEnTabla(producto);
+            filas.add(new String[] {
+                    String.valueOf(producto.getId()),
+                    limitar(producto.getCodigo(), 14),
+                    limitar(producto.getNombre(), 25),
+                    obtenerTipoProducto(producto),
+                    limitar(producto.getCategoria().getNombre(), 22),
+                    String.valueOf(producto.getStock()),
+                    String.format("%.2f", producto.calcularPrecioFinal()),
+                    String.valueOf(producto.getEstado())
+            });
         }
+
+        imprimirTabla(
+                new String[] {"ID", "Codigo", "Nombre", "Tipo", "Categoria", "Stock", "Precio", "Estado"},
+                filas);
     }
 
     public static void imprimirProducto(Producto producto) {
-        System.out.println("ID: " + producto.getId());
-        System.out.println("Codigo: " + producto.getCodigo());
-        System.out.println("Nombre: " + producto.getNombre());
-        System.out.println("Descripcion: " + producto.getDescripcion());
-        System.out.println("Tipo: " + obtenerTipoProducto(producto));
-        System.out.println("Categoria: " + producto.getCategoria().getNombre() + " (ID " + producto.getCategoria().getId() + ")");
-        System.out.printf("Precio base: %.2f%n", producto.getPrecio());
-        System.out.printf("Precio final: %.2f%n", producto.calcularPrecioFinal());
-        System.out.println("Stock: " + producto.getStock());
-        System.out.println("Peso: " + producto.getPeso());
-        System.out.println("Estado: " + producto.getEstado());
+        List<String[]> campos = new ArrayList<>();
+        campos.add(new String[] {"ID", String.valueOf(producto.getId())});
+        campos.add(new String[] {"Codigo", producto.getCodigo()});
+        campos.add(new String[] {"Nombre", producto.getNombre()});
+        campos.add(new String[] {"Descripcion", producto.getDescripcion()});
+        campos.add(new String[] {"Tipo", obtenerTipoProducto(producto)});
+        campos.add(new String[] {"Categoria", producto.getCategoria().getNombre() + " (ID " + producto.getCategoria().getId() + ")"});
+        campos.add(new String[] {"Precio base", String.format("%.2f", producto.getPrecio())});
+        campos.add(new String[] {"Precio final", String.format("%.2f", producto.calcularPrecioFinal())});
+        campos.add(new String[] {"Stock", String.valueOf(producto.getStock())});
+        campos.add(new String[] {"Peso", String.valueOf(producto.getPeso())});
+        campos.add(new String[] {"Estado", String.valueOf(producto.getEstado())});
 
         if (producto instanceof ProductoDigital productoDigital) {
-            System.out.println("URL de descarga: " + productoDigital.getUrlDescarga());
+            campos.add(new String[] {"URL de descarga", productoDigital.getUrlDescarga()});
         } else if (producto instanceof ProductoImportado productoImportado) {
-            System.out.println("Impuesto de importacion: " + productoImportado.getPorcentajeImpuestoImportacion() + "%");
+            campos.add(new String[] {"Impuesto importacion", productoImportado.getPorcentajeImpuestoImportacion() + "%"});
         }
+
+        imprimirFicha("PRODUCTO", campos.toArray(new String[0][]));
     }
 
     public static void imprimirProductoEnTabla(Producto producto) {
@@ -187,25 +238,30 @@ public final class ConsolaUtils {
 
 
     public static void imprimirCarrito(Carrito carrito) {
-        System.out.println("Cliente: " + carrito.getCliente().getNombre() + " "
+        imprimirEtiquetaValor("Cliente", carrito.getCliente().getNombre() + " "
                 + carrito.getCliente().getApellido() + " - " + carrito.getCliente().getEmail());
-        System.out.println("Fecha de creacion: " + carrito.getFechaCreacion());
+        imprimirEtiquetaValor("Fecha de creacion", carrito.getFechaCreacion());
 
         if (carrito.estaVacio()) {
             System.out.println("El carrito esta vacio.");
             return;
         }
 
-        System.out.printf("%-14s %-28s %-10s %-15s %-15s%n",
-                "Codigo", "Producto", "Cantidad", "Precio unit.", "Subtotal");
-        System.out.println("--------------------------------------------------------------------------------------");
-
+        List<String[]> filas = new ArrayList<>();
         for (ItemCarrito item : carrito.getItems()) {
-            imprimirItemCarritoEnTabla(item);
+            filas.add(new String[] {
+                    limitar(item.getProducto().getCodigo(), 14),
+                    limitar(item.getProducto().getNombre(), 28),
+                    String.valueOf(item.getCantidad()),
+                    String.format("%.2f", item.getPrecioUnitario()),
+                    String.format("%.2f", item.calcularSubtotal())
+            });
         }
 
-        System.out.println("--------------------------------------------------------------------------------------");
-        System.out.printf("Total: %.2f%n", carrito.calcularTotal());
+        imprimirTabla(
+                new String[] {"Codigo", "Producto", "Cantidad", "Precio unit.", "Subtotal"},
+                filas);
+        imprimirMensajeExito(String.format("Total: %.2f", carrito.calcularTotal()));
     }
 
     public static void imprimirItemCarritoEnTabla(ItemCarrito item) {
@@ -223,24 +279,34 @@ public final class ConsolaUtils {
             return;
         }
 
-        System.out.printf("%-5s %-20s %-13s %-10s %-18s %-16s %-35s%n",
-                "ID", "Producto", "Tipo", "Cantidad", "Stock result.", "Fecha", "Motivo");
-        System.out.println("----------------------------------------------------------------------------------------------------------------------");
-
+        List<String[]> filas = new ArrayList<>();
         for (InventarioMovimiento movimiento : movimientos) {
-            imprimirMovimientoInventarioEnTabla(movimiento);
+            filas.add(new String[] {
+                    String.valueOf(movimiento.getId()),
+                    limitar(movimiento.getProducto().getCodigo(), 20),
+                    String.valueOf(movimiento.getTipo()),
+                    String.valueOf(movimiento.getCantidad()),
+                    String.valueOf(movimiento.getStockResultante()),
+                    String.valueOf(movimiento.getFecha().toLocalDate()),
+                    limitar(movimiento.getMotivo(), 35)
+            });
         }
+
+        imprimirTabla(
+                new String[] {"ID", "Producto", "Tipo", "Cantidad", "Stock result.", "Fecha", "Motivo"},
+                filas);
     }
 
     public static void imprimirMovimientoInventario(InventarioMovimiento movimiento) {
-        System.out.println("ID: " + movimiento.getId());
-        System.out.println("Producto: " + movimiento.getProducto().getNombre()
-                + " (" + movimiento.getProducto().getCodigo() + ")");
-        System.out.println("Tipo: " + movimiento.getTipo());
-        System.out.println("Cantidad: " + movimiento.getCantidad());
-        System.out.println("Stock resultante: " + movimiento.getStockResultante());
-        System.out.println("Fecha: " + movimiento.getFecha());
-        System.out.println("Motivo: " + movimiento.getMotivo());
+        imprimirFicha("MOVIMIENTO DE INVENTARIO", new String[][] {
+                {"ID", String.valueOf(movimiento.getId())},
+                {"Producto", movimiento.getProducto().getNombre() + " (" + movimiento.getProducto().getCodigo() + ")"},
+                {"Tipo", String.valueOf(movimiento.getTipo())},
+                {"Cantidad", String.valueOf(movimiento.getCantidad())},
+                {"Stock resultante", String.valueOf(movimiento.getStockResultante())},
+                {"Fecha", String.valueOf(movimiento.getFecha())},
+                {"Motivo", movimiento.getMotivo()}
+        });
     }
 
     public static void imprimirMovimientoInventarioEnTabla(InventarioMovimiento movimiento) {
@@ -261,21 +327,30 @@ public final class ConsolaUtils {
             return;
         }
 
-        System.out.printf("%-5s %-28s %-12s %-14s %-18s%n",
-                "ID", "Metodo", "Monto", "Estado", "Fecha");
-        System.out.println("--------------------------------------------------------------------------------");
-
+        List<String[]> filas = new ArrayList<>();
         for (Pago pago : pagos) {
-            imprimirPagoEnTabla(pago);
+            filas.add(new String[] {
+                    String.valueOf(pago.getId()),
+                    String.valueOf(pago.getMetodoPago()),
+                    String.format("%.2f", pago.getMonto()),
+                    String.valueOf(pago.getEstado()),
+                    String.valueOf(pago.getFecha().toLocalDate())
+            });
         }
+
+        imprimirTabla(
+                new String[] {"ID", "Metodo", "Monto", "Estado", "Fecha"},
+                filas);
     }
 
     public static void imprimirPago(Pago pago) {
-        System.out.println("ID: " + pago.getId());
-        System.out.println("Metodo de pago: " + pago.getMetodoPago());
-        System.out.printf("Monto: %.2f%n", pago.getMonto());
-        System.out.println("Estado: " + pago.getEstado());
-        System.out.println("Fecha: " + pago.getFecha());
+        imprimirFicha("PAGO", new String[][] {
+                {"ID", String.valueOf(pago.getId())},
+                {"Metodo de pago", String.valueOf(pago.getMetodoPago())},
+                {"Monto", String.format("%.2f", pago.getMonto())},
+                {"Estado", String.valueOf(pago.getEstado())},
+                {"Fecha", String.valueOf(pago.getFecha())}
+        });
     }
 
     public static void imprimirPagoEnTabla(Pago pago) {
@@ -294,34 +369,43 @@ public final class ConsolaUtils {
             return;
         }
 
-        System.out.printf("%-25s %-28s %-14s %-15s %-18s %-18s%n",
-                "Numero", "Cliente", "Total", "Estado", "Pago", "Fecha");
-        System.out.println("----------------------------------------------------------------------------------------------------------------");
-
+        List<String[]> filas = new ArrayList<>();
         for (OrdenCompra orden : ordenes) {
-            imprimirOrdenEnTabla(orden);
+            String cliente = orden.getCliente().getNombre() + " " + orden.getCliente().getApellido();
+            String pago = orden.getPago() == null ? "Sin pago" : orden.getPago().getEstado().toString();
+            filas.add(new String[] {
+                    limitar(orden.getNumero(), 25),
+                    limitar(cliente, 28),
+                    String.format("%.2f", orden.getTotal()),
+                    String.valueOf(orden.getEstado()),
+                    pago,
+                    String.valueOf(orden.getFecha().toLocalDate())
+            });
         }
+
+        imprimirTabla(
+                new String[] {"Numero", "Cliente", "Total", "Estado", "Pago", "Fecha"},
+                filas);
     }
 
     public static void imprimirOrden(OrdenCompra orden) {
-        System.out.println("Numero: " + orden.getNumero());
-        System.out.println("Cliente: " + orden.getCliente().getNombre() + " "
-                + orden.getCliente().getApellido() + " - " + orden.getCliente().getEmail());
-        System.out.println("Fecha: " + orden.getFecha());
-        System.out.println("Estado: " + orden.getEstado());
-        System.out.printf("Total productos: %.2f%n", orden.getTotal());
+        List<String[]> campos = new ArrayList<>();
+        campos.add(new String[] {"Numero", orden.getNumero()});
+        campos.add(new String[] {"Cliente", orden.getCliente().getNombre() + " "
+                + orden.getCliente().getApellido() + " - " + orden.getCliente().getEmail()});
+        campos.add(new String[] {"Fecha", String.valueOf(orden.getFecha())});
+        campos.add(new String[] {"Estado", String.valueOf(orden.getEstado())});
+        campos.add(new String[] {"Total productos", String.format("%.2f", orden.getTotal())});
 
         if (orden.getPago() != null) {
-            System.out.println();
-            System.out.println("Pago asociado:");
-            imprimirPago(orden.getPago());
+            campos.add(new String[] {"Pago", orden.getPago().getMetodoPago() + " / " + orden.getPago().getEstado()});
         }
 
         if (orden.getEnvio() != null) {
-            System.out.println();
-            System.out.println("Envio asociado:");
-            imprimirEnvio(orden.getEnvio());
+            campos.add(new String[] {"Envio", orden.getEnvio().getCodigoSeguimiento() + " / " + orden.getEnvio().getEstado()});
         }
+
+        imprimirFicha("ORDEN", campos.toArray(new String[0][]));
 
         if (orden.getProductos().isEmpty()) {
             System.out.println("La orden no tiene productos asociados.");
@@ -360,14 +444,16 @@ public final class ConsolaUtils {
     }
 
     public static void imprimirEnvio(Envio envio) {
-        System.out.println("Codigo de seguimiento: " + envio.getCodigoSeguimiento());
-        System.out.println("Tipo: " + envio.getTipoEnvio());
-        System.out.println("Estado: " + envio.getEstado());
-        System.out.println("Direccion: " + envio.getDireccion());
-        System.out.println("Provincia: " + envio.getProvincia());
-        System.out.println("Ciudad: " + envio.getCiudad());
-        System.out.println("Codigo postal: " + envio.getCodigoPostal());
-        System.out.printf("Costo: %.2f%n", envio.getCosto());
+        imprimirFicha("ENVIO", new String[][] {
+                {"Codigo de seguimiento", envio.getCodigoSeguimiento()},
+                {"Tipo", String.valueOf(envio.getTipoEnvio())},
+                {"Estado", String.valueOf(envio.getEstado())},
+                {"Direccion", envio.getDireccion()},
+                {"Provincia", envio.getProvincia()},
+                {"Ciudad", envio.getCiudad()},
+                {"Codigo postal", envio.getCodigoPostal()},
+                {"Costo", String.format("%.2f", envio.getCosto())}
+        });
     }
 
 
@@ -377,13 +463,22 @@ public final class ConsolaUtils {
             return;
         }
 
-        System.out.printf("%-15s %-18s %-14s %-18s %-18s %-18s %-12s%n",
-                "Codigo", "Tipo", "Estado", "Provincia", "Ciudad", "Codigo postal", "Costo");
-        System.out.println("----------------------------------------------------------------------------------------------------------------");
-
+        List<String[]> filas = new ArrayList<>();
         for (Envio envio : envios) {
-            imprimirEnvioEnTabla(envio);
+            filas.add(new String[] {
+                    limitar(envio.getCodigoSeguimiento(), 15),
+                    String.valueOf(envio.getTipoEnvio()),
+                    String.valueOf(envio.getEstado()),
+                    limitar(envio.getProvincia(), 18),
+                    limitar(envio.getCiudad(), 18),
+                    limitar(envio.getCodigoPostal(), 18),
+                    String.format("%.2f", envio.getCosto())
+            });
         }
+
+        imprimirTabla(
+                new String[] {"Codigo", "Tipo", "Estado", "Provincia", "Ciudad", "Codigo postal", "Costo"},
+                filas);
     }
 
     public static void imprimirEnvioEnTabla(Envio envio) {
@@ -403,13 +498,20 @@ public final class ConsolaUtils {
             return;
         }
 
-        System.out.printf("%-5s %-15s %-14s %-20s %-45s%n",
-                "ID", "Codigo", "Estado", "Fecha", "Descripcion");
-        System.out.println("---------------------------------------------------------------------------------------------------------------");
-
+        List<String[]> filas = new ArrayList<>();
         for (EnvioHistorialEstado registro : historial) {
-            imprimirHistorialEnvioEnTabla(registro);
+            filas.add(new String[] {
+                    String.valueOf(registro.getId()),
+                    limitar(registro.getCodigoSeguimiento(), 15),
+                    String.valueOf(registro.getEstado()),
+                    String.valueOf(registro.getFecha()),
+                    limitar(registro.getDescripcion(), 45)
+            });
         }
+
+        imprimirTabla(
+                new String[] {"ID", "Codigo", "Estado", "Fecha", "Descripcion"},
+                filas);
     }
 
     public static void imprimirHistorialEnvioEnTabla(EnvioHistorialEstado registro) {
@@ -428,23 +530,34 @@ public final class ConsolaUtils {
             return;
         }
 
-        System.out.printf("%-24s %-28s %-25s %-14s %-18s %-35s%n",
-                "Numero", "Cliente", "Orden", "Estado", "Fecha", "Motivo");
-        System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------");
-
+        List<String[]> filas = new ArrayList<>();
         for (ecommerce.model.Reclamo reclamo : reclamos) {
-            imprimirReclamoEnTabla(reclamo);
+            String cliente = reclamo.getCliente().getNombre() + " " + reclamo.getCliente().getApellido();
+            filas.add(new String[] {
+                    limitar(reclamo.getNumeroReclamo(), 24),
+                    limitar(cliente, 28),
+                    limitar(reclamo.getPedidoAsociado().getNumero(), 25),
+                    String.valueOf(reclamo.getEstado()),
+                    String.valueOf(reclamo.getFecha().toLocalDate()),
+                    limitar(reclamo.getMotivo(), 35)
+            });
         }
+
+        imprimirTabla(
+                new String[] {"Numero", "Cliente", "Orden", "Estado", "Fecha", "Motivo"},
+                filas);
     }
 
     public static void imprimirReclamo(ecommerce.model.Reclamo reclamo) {
-        System.out.println("Numero: " + reclamo.getNumeroReclamo());
-        System.out.println("Cliente: " + reclamo.getCliente().getNombre() + " "
-                + reclamo.getCliente().getApellido() + " - " + reclamo.getCliente().getEmail());
-        System.out.println("Orden asociada: " + reclamo.getPedidoAsociado().getNumero());
-        System.out.println("Motivo: " + reclamo.getMotivo());
-        System.out.println("Fecha: " + reclamo.getFecha());
-        System.out.println("Estado: " + reclamo.getEstado());
+        imprimirFicha("RECLAMO", new String[][] {
+                {"Numero", reclamo.getNumeroReclamo()},
+                {"Cliente", reclamo.getCliente().getNombre() + " "
+                        + reclamo.getCliente().getApellido() + " - " + reclamo.getCliente().getEmail()},
+                {"Orden asociada", reclamo.getPedidoAsociado().getNumero()},
+                {"Motivo", reclamo.getMotivo()},
+                {"Fecha", String.valueOf(reclamo.getFecha())},
+                {"Estado", String.valueOf(reclamo.getEstado())}
+        });
     }
 
     public static void imprimirReclamoEnTabla(ecommerce.model.Reclamo reclamo) {
@@ -464,24 +577,35 @@ public final class ConsolaUtils {
             return;
         }
 
-        System.out.printf("%-5s %-28s %-25s %-14s %-18s %-35s%n",
-                "ID", "Cliente", "Producto", "Estado", "Fecha", "Motivo");
-        System.out.println("-----------------------------------------------------------------------------------------------------------------------------------");
-
+        List<String[]> filas = new ArrayList<>();
         for (Devolucion devolucion : devoluciones) {
-            imprimirDevolucionEnTabla(devolucion);
+            String cliente = devolucion.getCliente().getNombre() + " " + devolucion.getCliente().getApellido();
+            filas.add(new String[] {
+                    String.valueOf(devolucion.getId()),
+                    limitar(cliente, 28),
+                    limitar(devolucion.getProducto().getNombre(), 25),
+                    String.valueOf(devolucion.getEstado()),
+                    String.valueOf(devolucion.getFecha().toLocalDate()),
+                    limitar(devolucion.getMotivo(), 35)
+            });
         }
+
+        imprimirTabla(
+                new String[] {"ID", "Cliente", "Producto", "Estado", "Fecha", "Motivo"},
+                filas);
     }
 
     public static void imprimirDevolucion(Devolucion devolucion) {
-        System.out.println("ID: " + devolucion.getId());
-        System.out.println("Cliente: " + devolucion.getCliente().getNombre() + " "
-                + devolucion.getCliente().getApellido() + " - " + devolucion.getCliente().getEmail());
-        System.out.println("Producto: " + devolucion.getProducto().getNombre()
-                + " (" + devolucion.getProducto().getCodigo() + ")");
-        System.out.println("Motivo: " + devolucion.getMotivo());
-        System.out.println("Fecha: " + devolucion.getFecha());
-        System.out.println("Estado: " + devolucion.getEstado());
+        imprimirFicha("DEVOLUCION", new String[][] {
+                {"ID", String.valueOf(devolucion.getId())},
+                {"Cliente", devolucion.getCliente().getNombre() + " "
+                        + devolucion.getCliente().getApellido() + " - " + devolucion.getCliente().getEmail()},
+                {"Producto", devolucion.getProducto().getNombre()
+                        + " (" + devolucion.getProducto().getCodigo() + ")"},
+                {"Motivo", devolucion.getMotivo()},
+                {"Fecha", String.valueOf(devolucion.getFecha())},
+                {"Estado", String.valueOf(devolucion.getEstado())}
+        });
     }
 
     public static void imprimirDevolucionEnTabla(Devolucion devolucion) {
@@ -501,24 +625,35 @@ public final class ConsolaUtils {
             return;
         }
 
-        System.out.printf("%-5s %-28s %-25s %-10s %-18s %-40s%n",
-                "ID", "Cliente", "Producto", "Puntos", "Fecha", "Comentario");
-        System.out.println("-----------------------------------------------------------------------------------------------------------------------------------");
-
+        List<String[]> filas = new ArrayList<>();
         for (Calificacion calificacion : calificaciones) {
-            imprimirCalificacionEnTabla(calificacion);
+            String cliente = calificacion.getCliente().getNombre() + " " + calificacion.getCliente().getApellido();
+            filas.add(new String[] {
+                    String.valueOf(calificacion.getId()),
+                    limitar(cliente, 28),
+                    limitar(calificacion.getProducto().getNombre(), 25),
+                    String.valueOf(calificacion.getPuntuacion()),
+                    String.valueOf(calificacion.getFecha().toLocalDate()),
+                    limitar(calificacion.getComentario(), 40)
+            });
         }
+
+        imprimirTabla(
+                new String[] {"ID", "Cliente", "Producto", "Puntos", "Fecha", "Comentario"},
+                filas);
     }
 
     public static void imprimirCalificacion(Calificacion calificacion) {
-        System.out.println("ID: " + calificacion.getId());
-        System.out.println("Cliente: " + calificacion.getCliente().getNombre() + " "
-                + calificacion.getCliente().getApellido() + " - " + calificacion.getCliente().getEmail());
-        System.out.println("Producto: " + calificacion.getProducto().getNombre()
-                + " (" + calificacion.getProducto().getCodigo() + ")");
-        System.out.println("Puntuacion: " + calificacion.getPuntuacion());
-        System.out.println("Comentario: " + calificacion.getComentario());
-        System.out.println("Fecha: " + calificacion.getFecha());
+        imprimirFicha("CALIFICACION", new String[][] {
+                {"ID", String.valueOf(calificacion.getId())},
+                {"Cliente", calificacion.getCliente().getNombre() + " "
+                        + calificacion.getCliente().getApellido() + " - " + calificacion.getCliente().getEmail()},
+                {"Producto", calificacion.getProducto().getNombre()
+                        + " (" + calificacion.getProducto().getCodigo() + ")"},
+                {"Puntuacion", String.valueOf(calificacion.getPuntuacion())},
+                {"Comentario", calificacion.getComentario()},
+                {"Fecha", String.valueOf(calificacion.getFecha())}
+        });
     }
 
     public static void imprimirCalificacionEnTabla(Calificacion calificacion) {
@@ -535,10 +670,12 @@ public final class ConsolaUtils {
     public static void imprimirRoles() {
         RolUsuario[] roles = RolUsuario.values();
 
+        String[] opciones = new String[roles.length];
         for (int i = 0; i < roles.length; i++) {
             RolUsuario rol = roles[i];
-            System.out.println((i + 1) + ". " + rol + " - " + describirRol(rol));
+            opciones[i] = (i + 1) + ". " + rol + " - " + describirRol(rol);
         }
+        imprimirMenuOpciones(opciones);
     }
 
     public static String describirRol(RolUsuario rol) {
@@ -573,8 +710,111 @@ public final class ConsolaUtils {
         return repetir(' ', espaciosIzquierda) + texto + repetir(' ', espaciosDerecha);
     }
 
+    private static void imprimirCaja(String texto, int ancho, char bordeInterno) {
+        String borde = "+" + repetir(bordeInterno, ancho - 2) + "+";
+        System.out.println(borde);
+        System.out.println("|" + centrar(texto, ancho - 2) + "|");
+        System.out.println(borde);
+    }
+
+    private static void imprimirBloqueMensaje(String tipo, String mensaje) {
+        String contenido = "[" + tipo + "] " + (mensaje == null ? "" : mensaje);
+        int ancho = Math.max(ANCHO_TERMINAL, contenido.length() + 4);
+        String borde = "+" + repetir('-', ancho - 2) + "+";
+        System.out.println(borde);
+        System.out.println("| " + padRight(contenido, ancho - 4) + " |");
+        System.out.println(borde);
+    }
+
     private static String repetir(char caracter, int cantidad) {
         return String.valueOf(caracter).repeat(Math.max(0, cantidad));
+    }
+
+    private static String padRight(String texto, int ancho) {
+        if (texto.length() >= ancho) {
+            return texto.substring(0, ancho);
+        }
+
+        return texto + repetir(' ', ancho - texto.length());
+    }
+
+    private static void imprimirTabla(String[] encabezados, List<String[]> filas) {
+        if (encabezados == null || encabezados.length == 0) {
+            return;
+        }
+
+        int columnas = encabezados.length;
+        int[] anchos = new int[columnas];
+
+        for (int i = 0; i < columnas; i++) {
+            anchos[i] = encabezados[i] == null ? 0 : encabezados[i].length();
+        }
+
+        for (String[] fila : filas) {
+            for (int i = 0; i < columnas && i < fila.length; i++) {
+                String valor = fila[i] == null ? "" : fila[i];
+                anchos[i] = Math.max(anchos[i], valor.length());
+            }
+        }
+
+        String borde = construirBorde(anchos);
+        System.out.println(borde);
+        imprimirFilaTabla(encabezados, anchos);
+        System.out.println(borde);
+        for (String[] fila : filas) {
+            imprimirFilaTabla(fila, anchos);
+        }
+        System.out.println(borde);
+    }
+
+    private static void imprimirFicha(String titulo, String[][] campos) {
+        String texto = titulo == null ? "" : titulo.trim().toUpperCase();
+        int anchoTitulo = Math.max(ANCHO_TERMINAL, texto.length() + 8);
+        String bordeTitulo = "+" + repetir('=', anchoTitulo - 2) + "+";
+        System.out.println();
+        System.out.println(bordeTitulo);
+        System.out.println("|" + centrar(texto, anchoTitulo - 2) + "|");
+        System.out.println(bordeTitulo);
+
+        int anchoEtiqueta = 0;
+        int anchoValor = 0;
+        for (String[] campo : campos) {
+            if (campo == null || campo.length < 2) {
+                continue;
+            }
+            anchoEtiqueta = Math.max(anchoEtiqueta, campo[0] == null ? 0 : campo[0].length());
+            anchoValor = Math.max(anchoValor, campo[1] == null ? 0 : campo[1].length());
+        }
+
+        anchoEtiqueta = Math.min(Math.max(anchoEtiqueta, 12), 26);
+        anchoValor = Math.min(Math.max(anchoValor, 20), 44);
+
+        String borde = "+-" + repetir('-', anchoEtiqueta) + "-+-" + repetir('-', anchoValor) + "-+";
+        System.out.println(borde);
+        for (String[] campo : campos) {
+            String etiqueta = campo != null && campo.length > 0 && campo[0] != null ? campo[0] : "";
+            String valor = campo != null && campo.length > 1 && campo[1] != null ? campo[1] : "";
+            System.out.println("| " + padRight(limitar(etiqueta, anchoEtiqueta), anchoEtiqueta)
+                    + " | " + padRight(limitar(valor, anchoValor), anchoValor) + " |");
+        }
+        System.out.println(borde);
+    }
+
+    private static void imprimirFilaTabla(String[] valores, int[] anchos) {
+        StringBuilder fila = new StringBuilder("|");
+        for (int i = 0; i < anchos.length; i++) {
+            String valor = i < valores.length && valores[i] != null ? valores[i] : "";
+            fila.append(' ').append(padRight(valor, anchos[i])).append(" |");
+        }
+        System.out.println(fila);
+    }
+
+    private static String construirBorde(int[] anchos) {
+        StringBuilder borde = new StringBuilder("+");
+        for (int ancho : anchos) {
+            borde.append(repetir('-', ancho + 2)).append('+');
+        }
+        return borde.toString();
     }
 
     private static String limitar(String valor, int maximo) {
