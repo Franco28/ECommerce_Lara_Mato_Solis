@@ -25,8 +25,6 @@ Incluye:
 
 ## Ejecutar / Compilar Proyecto
 
-`
-$files = Get-ChildItem -Recurse -Filter *.java | ForEach-Object FullName
-javac -d out $files
-java -cp out ecommerce.Main
-`
+`$files = Get-ChildItem -Recurse -Filter *.java | ForEach-Object FullName`
+`javac -d out $files`
+`java -cp out ecommerce.Main`
