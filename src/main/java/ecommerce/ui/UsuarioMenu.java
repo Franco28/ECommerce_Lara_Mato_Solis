@@ -22,15 +22,17 @@ public class UsuarioMenu {
 
         do {
             ConsolaUtils.imprimirTitulo("GESTION DE USUARIOS");
-            System.out.println("1. Registrar usuario");
-            System.out.println("2. Modificar usuario");
-            System.out.println("3. Eliminar usuario");
-            System.out.println("4. Buscar usuario por ID");
-            System.out.println("5. Buscar usuario por email");
-            System.out.println("6. Listar usuarios");
-            System.out.println("7. Activar usuario");
-            System.out.println("8. Desactivar usuario");
-            System.out.println("0. Volver");
+            ConsolaUtils.imprimirMensajeInfo("Administrador: alta, edicion, baja y consultas.");
+            ConsolaUtils.imprimirMenuOpciones(
+                    "1. Registrar usuario",
+                    "2. Modificar usuario",
+                    "3. Eliminar usuario",
+                    "4. Buscar usuario por ID",
+                    "5. Buscar usuario por email",
+                    "6. Listar usuarios",
+                    "7. Activar usuario",
+                    "8. Desactivar usuario",
+                    "0. Volver");
 
             opcion = entrada.leerEntero("Opcion: ");
             ejecutarOpcion(opcion);
@@ -49,10 +51,10 @@ public class UsuarioMenu {
                 case 7 -> activarUsuario();
                 case 8 -> desactivarUsuario();
                 case 0 -> { }
-                default -> System.out.println("Opcion incorrecta.");
+                default -> ConsolaUtils.imprimirMensajeError("Opcion incorrecta.");
             }
         } catch (EcommerceException ex) {
-            System.out.println("Error: " + ex.getMessage());
+            ConsolaUtils.imprimirMensajeError(ex.getMessage());
         }
 
         if (opcion != 0) {
@@ -71,7 +73,7 @@ public class UsuarioMenu {
 
         Usuario usuario = usuarioService.registrarUsuario(nombre, apellido, email, contrasenia, rol);
 
-        System.out.println("Usuario registrado correctamente.");
+        ConsolaUtils.imprimirMensajeExito("Usuario registrado correctamente.");
         ConsolaUtils.imprimirUsuario(usuario);
     }
 
@@ -91,7 +93,7 @@ public class UsuarioMenu {
         usuario.setRol(rolSelector.seleccionarRolOpcional(usuario.getRol()));
 
         usuarioService.modificarUsuario(usuario);
-        System.out.println("Usuario modificado correctamente.");
+        ConsolaUtils.imprimirMensajeExito("Usuario modificado correctamente.");
     }
 
     private void eliminarUsuario() {
@@ -104,9 +106,9 @@ public class UsuarioMenu {
         String confirmacion = entrada.leerTexto("Escriba SI para confirmar la eliminacion: ");
         if ("SI".equalsIgnoreCase(confirmacion)) {
             usuarioService.eliminarUsuario(id);
-            System.out.println("Usuario eliminado correctamente.");
+            ConsolaUtils.imprimirMensajeExito("Usuario eliminado correctamente.");
         } else {
-            System.out.println("Eliminacion cancelada.");
+            ConsolaUtils.imprimirMensajeInfo("Eliminacion cancelada.");
         }
     }
 
@@ -131,13 +133,13 @@ public class UsuarioMenu {
         ConsolaUtils.imprimirTitulo("ACTIVAR USUARIO");
         int id = entrada.leerEntero("ID del usuario: ");
         usuarioService.activarUsuario(id);
-        System.out.println("Usuario activado correctamente.");
+        ConsolaUtils.imprimirMensajeExito("Usuario activado correctamente.");
     }
 
     private void desactivarUsuario() {
         ConsolaUtils.imprimirTitulo("DESACTIVAR USUARIO");
         int id = entrada.leerEntero("ID del usuario: ");
         usuarioService.desactivarUsuario(id);
-        System.out.println("Usuario desactivado correctamente.");
+        ConsolaUtils.imprimirMensajeExito("Usuario desactivado correctamente.");
     }
 }

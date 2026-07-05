@@ -21,13 +21,13 @@ public class RolSelector {
                 return roles[opcion - 1];
             }
 
-            System.out.println("Rol invalido.");
+            ConsolaUtils.imprimirMensajeError("Rol invalido.");
         }
     }
 
     public RolUsuario seleccionarRolOpcional(RolUsuario rolActual) {
-        System.out.println("Rol actual: " + rolActual);
-        System.out.println("0. Mantener rol actual");
+        ConsolaUtils.imprimirEtiquetaValor("Rol actual", rolActual);
+        ConsolaUtils.imprimirMenuOpciones("0. Mantener rol actual");
         ConsolaUtils.imprimirRoles();
 
         while (true) {
@@ -41,7 +41,7 @@ public class RolSelector {
                 return roles[opcion - 1];
             }
 
-            System.out.println("Rol invalido.");
+            ConsolaUtils.imprimirMensajeError("Rol invalido.");
         }
     }
 }

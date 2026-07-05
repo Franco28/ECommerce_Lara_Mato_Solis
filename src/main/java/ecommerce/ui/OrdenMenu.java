@@ -51,14 +51,16 @@ public class OrdenMenu {
 
     private void imprimirMenu() {
         ConsolaUtils.imprimirTitulo("ORDENES DE COMPRA");
-        System.out.println("1. Confirmar compra desde carrito");
-        System.out.println("2. Buscar orden por numero");
-        System.out.println("3. Listar ordenes");
-        System.out.println("4. Listar ordenes por cliente");
-        System.out.println("5. Listar ordenes por estado");
-        System.out.println("6. Actualizar estado de orden");
-        System.out.println("7. Eliminar orden");
-        System.out.println("0. Volver");
+        ConsolaUtils.imprimirMensajeInfo("Checkout, consulta y administracion de ordenes.");
+        ConsolaUtils.imprimirMenuOpciones(
+                "1. Confirmar compra desde carrito",
+                "2. Buscar orden por numero",
+                "3. Listar ordenes",
+                "4. Listar ordenes por cliente",
+                "5. Listar ordenes por estado",
+                "6. Actualizar estado de orden",
+                "7. Eliminar orden",
+                "0. Volver");
     }
 
     private void ejecutarOpcion(int opcion) {
@@ -72,12 +74,12 @@ public class OrdenMenu {
                 case 6 -> actualizarEstado();
                 case 7 -> eliminarOrden();
                 case 0 -> { }
-                default -> System.out.println("Opcion incorrecta.");
+                default -> ConsolaUtils.imprimirMensajeError("Opcion incorrecta.");
             }
         } catch (PagoRechazadoException ex) {
-            System.out.println("Pago rechazado: " + ex.getMessage());
+            ConsolaUtils.imprimirMensajeError("Pago rechazado: " + ex.getMessage());
         } catch (EcommerceException ex) {
-            System.out.println("Error: " + ex.getMessage());
+            ConsolaUtils.imprimirMensajeError(ex.getMessage());
         }
 
         if (opcion != 0) {
@@ -95,12 +97,12 @@ public class OrdenMenu {
         DatosEnvio datosEnvio = leerDatosEnvio();
 
         if (!entrada.confirmar("Se generara la orden, el pago, el envio y el egreso de stock.")) {
-            System.out.println("Operacion cancelada.");
+            ConsolaUtils.imprimirMensajeInfo("Operacion cancelada.");
             return;
         }
 
         OrdenCompra orden = checkoutFacade.confirmarCompra(cliente, metodoPago, datosEnvio);
-        System.out.println("Orden generada correctamente.");
+        ConsolaUtils.imprimirMensajeExito("Orden generada correctamente.");
         ConsolaUtils.imprimirOrden(orden);
     }
 
@@ -142,7 +144,7 @@ public class OrdenMenu {
         String numero = entrada.leerTexto("Numero de orden: ");
         EstadoOrden estado = estadoOrdenSelector.seleccionarEstadoOrden();
         ordenService.actualizarEstado(numero, estado);
-        System.out.println("Estado actualizado correctamente.");
+        ConsolaUtils.imprimirMensajeExito("Estado actualizado correctamente.");
     }
 
     private void eliminarOrden() {
@@ -151,9 +153,9 @@ public class OrdenMenu {
 
         if (entrada.confirmar("La orden y sus items seran eliminados.")) {
             ordenService.eliminarOrden(numero);
-            System.out.println("Orden eliminada correctamente.");
+            ConsolaUtils.imprimirMensajeExito("Orden eliminada correctamente.");
         } else {
-            System.out.println("Operacion cancelada.");
+            ConsolaUtils.imprimirMensajeInfo("Operacion cancelada.");
         }
     }
 }

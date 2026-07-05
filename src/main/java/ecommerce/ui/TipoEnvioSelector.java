@@ -18,8 +18,10 @@ public class TipoEnvioSelector {
 
     private void imprimirTipos() {
         TipoEnvio[] tipos = TipoEnvio.values();
+        String[] opciones = new String[tipos.length];
         for (int i = 0; i < tipos.length; i++) {
-            System.out.println((i + 1) + ". " + tipos[i]);
+            opciones[i] = (i + 1) + ". " + tipos[i];
         }
+        ConsolaUtils.imprimirMenuOpciones(opciones);
     }
 }

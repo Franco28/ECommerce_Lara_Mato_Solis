@@ -32,15 +32,17 @@ public class EnvioMenu {
 
     private void imprimirMenu() {
         ConsolaUtils.imprimirTitulo("GESTION DE ENVIOS");
-        System.out.println("1. Crear envio manual");
-        System.out.println("2. Buscar envio por codigo de seguimiento");
-        System.out.println("3. Listar envios");
-        System.out.println("4. Listar envios por estado");
-        System.out.println("5. Actualizar estado de envio");
-        System.out.println("6. Consultar historial de envio");
-        System.out.println("7. Consultar fecha estimada de entrega");
-        System.out.println("8. Eliminar envio");
-        System.out.println("0. Volver");
+        ConsolaUtils.imprimirMensajeInfo("Gestion de envios y seguimiento logistico.");
+        ConsolaUtils.imprimirMenuOpciones(
+                "1. Crear envio manual",
+                "2. Buscar envio por codigo de seguimiento",
+                "3. Listar envios",
+                "4. Listar envios por estado",
+                "5. Actualizar estado de envio",
+                "6. Consultar historial de envio",
+                "7. Consultar fecha estimada de entrega",
+                "8. Eliminar envio",
+                "0. Volver");
     }
 
     private void ejecutarOpcion(int opcion) {
@@ -55,10 +57,10 @@ public class EnvioMenu {
                 case 7 -> consultarFechaEstimada();
                 case 8 -> eliminarEnvio();
                 case 0 -> { }
-                default -> System.out.println("Opcion incorrecta.");
+                default -> ConsolaUtils.imprimirMensajeError("Opcion incorrecta.");
             }
         } catch (EcommerceException ex) {
-            System.out.println("Error: " + ex.getMessage());
+            ConsolaUtils.imprimirMensajeError(ex.getMessage());
         }
 
         if (opcion != 0) {
@@ -75,7 +77,7 @@ public class EnvioMenu {
         String codigoPostal = entrada.leerTexto("Codigo postal: ");
 
         Envio envio = envioService.crearEnvio(direccion, provincia, ciudad, codigoPostal, tipoEnvio);
-        System.out.println("Envio creado correctamente.");
+        ConsolaUtils.imprimirMensajeExito("Envio creado correctamente.");
         ConsolaUtils.imprimirEnvio(envio);
     }
 
@@ -101,7 +103,7 @@ public class EnvioMenu {
         String codigo = entrada.leerTexto("Codigo de seguimiento: ");
         EstadoEnvio estado = estadoEnvioSelector.seleccionarEstadoEnvio();
         envioService.actualizarEstado(codigo, estado);
-        System.out.println("Estado actualizado correctamente.");
+        ConsolaUtils.imprimirMensajeExito("Estado actualizado correctamente.");
     }
 
     private void consultarHistorial() {
@@ -122,9 +124,9 @@ public class EnvioMenu {
 
         if (entrada.confirmar("El envio sera eliminado.")) {
             envioService.eliminarEnvio(codigo);
-            System.out.println("Envio eliminado correctamente.");
+            ConsolaUtils.imprimirMensajeExito("Envio eliminado correctamente.");
         } else {
-            System.out.println("Operacion cancelada.");
+            ConsolaUtils.imprimirMensajeInfo("Operacion cancelada.");
         }
     }
 }

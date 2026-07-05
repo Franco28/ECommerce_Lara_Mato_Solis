@@ -77,25 +77,27 @@ public class MenuPrincipal {
     private void imprimirMenu() {
         ConsolaUtils.imprimirTitulo("SISTEMA E-COMMERCE");
         imprimirSesionActual();
-        System.out.println("1. Gestion de Usuarios");
-        System.out.println("2. Gestion de Roles");
-        System.out.println("3. Gestion de Productos");
-        System.out.println("4. Gestion de Categorias");
-        System.out.println("5. Gestion de Inventario");
-        System.out.println("6. Carrito de Compras");
-        System.out.println("7. Ordenes de Compra");
-        System.out.println("8. Procesamiento de Pagos");
-        System.out.println("9. Gestion de Envios");
-        System.out.println("10. Seguimiento de Pedidos");
-        System.out.println("11. Reclamos y Devoluciones");
-        System.out.println("12. Reportes");
-        System.out.println("13. Salir");
+        ConsolaUtils.imprimirMensajeInfo("Seleccione un modulo y presione Enter.");
+        ConsolaUtils.imprimirMenuOpciones(
+                "1. Gestion de Usuarios",
+                "2. Gestion de Roles",
+                "3. Gestion de Productos",
+                "4. Gestion de Categorias",
+                "5. Gestion de Inventario",
+                "6. Carrito de Compras",
+                "7. Ordenes de Compra",
+                "8. Procesamiento de Pagos",
+                "9. Gestion de Envios",
+                "10. Seguimiento de Pedidos",
+                "11. Reclamos y Devoluciones",
+                "12. Reportes",
+                "13. Salir");
     }
 
     private void imprimirSesionActual() {
         Usuario usuario = sesionUsuarioService.requerirUsuarioActual();
-        System.out.println("Usuario: " + usuario.getNombre() + " " + usuario.getApellido()
-                + " | Rol: " + usuario.getRol());
+        ConsolaUtils.imprimirEtiquetaValor("Usuario", usuario.getNombre() + " " + usuario.getApellido());
+        ConsolaUtils.imprimirEtiquetaValor("Rol", usuario.getRol());
         System.out.println();
     }
 
@@ -115,11 +117,11 @@ public class MenuPrincipal {
                 case 10 -> seguimientoMenu.mostrar();
                 case 11 -> postCompraMenu.mostrar();
                 case 12 -> reporteMenu.mostrar();
-                case 13 -> System.out.println("Saliendo del menu principal.");
-                default -> System.out.println("Opcion incorrecta.");
+                case 13 -> ConsolaUtils.imprimirMensajeInfo("Saliendo del menu principal.");
+                default -> ConsolaUtils.imprimirMensajeError("Opcion incorrecta.");
             }
         } catch (EcommerceException ex) {
-            System.out.println("Error: " + ex.getMessage());
+            ConsolaUtils.imprimirMensajeError(ex.getMessage());
             entrada.pausar();
         }
     }

@@ -7,8 +7,8 @@ import ecommerce.model.Usuario;
 import ecommerce.service.CarritoService;
 import ecommerce.service.CarritoSesionService;
 import ecommerce.service.ProductoService;
-import ecommerce.service.UsuarioService;
 import ecommerce.service.SesionUsuarioService;
+import ecommerce.service.UsuarioService;
 
 import java.util.List;
 
@@ -36,17 +36,19 @@ public class CarritoMenu {
 
         do {
             imprimirEncabezado();
-            System.out.println("1. Seleccionar cliente");
-            System.out.println("2. Crear o recuperar carrito activo");
-            System.out.println("3. Agregar producto");
-            System.out.println("4. Eliminar producto");
-            System.out.println("5. Modificar cantidad");
-            System.out.println("6. Vaciar carrito");
-            System.out.println("7. Visualizar carrito");
-            System.out.println("8. Calcular subtotal");
-            System.out.println("9. Calcular total");
-            System.out.println("10. Listar productos disponibles");
-            System.out.println("0. Volver");
+            ConsolaUtils.imprimirMensajeInfo("Trabaja solo con el cliente seleccionado.");
+            ConsolaUtils.imprimirMenuOpciones(
+                    "1. Seleccionar cliente",
+                    "2. Crear o recuperar carrito activo",
+                    "3. Agregar producto",
+                    "4. Eliminar producto",
+                    "5. Modificar cantidad",
+                    "6. Vaciar carrito",
+                    "7. Visualizar carrito",
+                    "8. Calcular subtotal",
+                    "9. Calcular total",
+                    "10. Listar productos disponibles",
+                    "0. Volver");
 
             opcion = entrada.leerEntero("Opcion: ");
             ejecutarOpcion(opcion);
@@ -56,10 +58,10 @@ public class CarritoMenu {
     private void imprimirEncabezado() {
         ConsolaUtils.imprimirTitulo("CARRITO DE COMPRAS");
         if (clienteActual == null) {
-            System.out.println("Cliente seleccionado: ninguno");
+            ConsolaUtils.imprimirEtiquetaValor("Cliente seleccionado", "ninguno");
         } else {
-            System.out.println("Cliente seleccionado: " + clienteActual.getNombre() + " "
-                    + clienteActual.getApellido() + " - " + clienteActual.getEmail());
+            ConsolaUtils.imprimirEtiquetaValor("Cliente seleccionado",
+                    clienteActual.getNombre() + " " + clienteActual.getApellido() + " - " + clienteActual.getEmail());
         }
         System.out.println();
     }
@@ -78,10 +80,10 @@ public class CarritoMenu {
                 case 9 -> calcularTotal();
                 case 10 -> listarProductosDisponibles();
                 case 0 -> { }
-                default -> System.out.println("Opcion incorrecta.");
+                default -> ConsolaUtils.imprimirMensajeError("Opcion incorrecta.");
             }
         } catch (EcommerceException ex) {
-            System.out.println("Error: " + ex.getMessage());
+            ConsolaUtils.imprimirMensajeError(ex.getMessage());
         }
 
         if (opcion != 0) {
@@ -93,12 +95,12 @@ public class CarritoMenu {
         ConsolaUtils.imprimirTitulo("SELECCIONAR CLIENTE");
         clienteActual = clienteSelector.seleccionarClienteActivo();
         obtenerCarritoActual();
-        System.out.println("Cliente seleccionado correctamente.");
+        ConsolaUtils.imprimirMensajeExito("Cliente seleccionado correctamente.");
     }
 
     private void crearORecuperarCarrito() {
         Carrito carrito = obtenerCarritoActual();
-        System.out.println("Carrito activo disponible para el cliente seleccionado.");
+        ConsolaUtils.imprimirMensajeInfo("Carrito activo disponible para el cliente seleccionado.");
         ConsolaUtils.imprimirCarrito(carrito);
     }
 
@@ -111,7 +113,7 @@ public class CarritoMenu {
         int cantidad = entrada.leerEntero("Cantidad: ");
         carritoService.agregarProducto(carrito, codigo, cantidad);
 
-        System.out.println("Producto agregado correctamente.");
+        ConsolaUtils.imprimirMensajeExito("Producto agregado correctamente.");
         ConsolaUtils.imprimirCarrito(carrito);
     }
 
@@ -124,7 +126,7 @@ public class CarritoMenu {
         String codigo = entrada.leerTexto("Codigo del producto: ");
         carritoService.eliminarProducto(carrito, codigo);
 
-        System.out.println("Producto eliminado del carrito.");
+        ConsolaUtils.imprimirMensajeExito("Producto eliminado del carrito.");
         ConsolaUtils.imprimirCarrito(carrito);
     }
 
@@ -138,7 +140,7 @@ public class CarritoMenu {
         int cantidad = entrada.leerEntero("Nueva cantidad: ");
         carritoService.modificarCantidad(carrito, codigo, cantidad);
 
-        System.out.println("Cantidad modificada correctamente.");
+        ConsolaUtils.imprimirMensajeExito("Cantidad modificada correctamente.");
         ConsolaUtils.imprimirCarrito(carrito);
     }
 
@@ -150,9 +152,9 @@ public class CarritoMenu {
 
         if (entrada.confirmar("El carrito quedara vacio.")) {
             carritoService.vaciarCarrito(carrito);
-            System.out.println("Carrito vaciado correctamente.");
+            ConsolaUtils.imprimirMensajeExito("Carrito vaciado correctamente.");
         } else {
-            System.out.println("Operacion cancelada.");
+            ConsolaUtils.imprimirMensajeInfo("Operacion cancelada.");
         }
     }
 
@@ -164,12 +166,12 @@ public class CarritoMenu {
 
     private void calcularSubtotal() {
         Carrito carrito = obtenerCarritoActual();
-        System.out.printf("Subtotal: %.2f%n", carritoService.calcularSubtotal(carrito));
+        ConsolaUtils.imprimirMensajeInfo(String.format("Subtotal: %.2f", carritoService.calcularSubtotal(carrito)));
     }
 
     private void calcularTotal() {
         Carrito carrito = obtenerCarritoActual();
-        System.out.printf("Total: %.2f%n", carritoService.calcularTotal(carrito));
+        ConsolaUtils.imprimirMensajeInfo(String.format("Total: %.2f", carritoService.calcularTotal(carrito)));
     }
 
     private void listarProductosDisponibles() {

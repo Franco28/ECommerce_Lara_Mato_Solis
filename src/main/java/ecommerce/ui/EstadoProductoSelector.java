@@ -17,7 +17,7 @@ public class EstadoProductoSelector {
     }
 
     public EstadoProducto seleccionarEstadoOpcional(EstadoProducto estadoActual) {
-        System.out.println("Estado actual: " + estadoActual);
+        ConsolaUtils.imprimirEtiquetaValor("Estado actual", estadoActual);
         imprimirEstados(true);
         int opcion = entrada.leerOpcion("Seleccione estado: ", 0, EstadoProducto.values().length);
         return opcion == 0 ? estadoActual : EstadoProducto.values()[opcion - 1];
@@ -25,12 +25,14 @@ public class EstadoProductoSelector {
 
     private void imprimirEstados(boolean incluirMantener) {
         if (incluirMantener) {
-            System.out.println("0. Mantener estado actual");
+            ConsolaUtils.imprimirMenuOpciones("0. Mantener estado actual");
         }
 
         EstadoProducto[] estados = EstadoProducto.values();
+        String[] opciones = new String[estados.length];
         for (int i = 0; i < estados.length; i++) {
-            System.out.println((i + 1) + ". " + estados[i]);
+            opciones[i] = (i + 1) + ". " + estados[i];
         }
+        ConsolaUtils.imprimirMenuOpciones(opciones);
     }
 }

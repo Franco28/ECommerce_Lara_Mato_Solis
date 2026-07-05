@@ -32,18 +32,20 @@ public class ProductoMenu {
 
         do {
             ConsolaUtils.imprimirTitulo("GESTION DE PRODUCTOS");
-            System.out.println("1. Registrar producto");
-            System.out.println("2. Modificar producto");
-            System.out.println("3. Eliminar producto");
-            System.out.println("4. Buscar producto por ID");
-            System.out.println("5. Buscar producto por codigo");
-            System.out.println("6. Listar productos");
-            System.out.println("7. Listar productos por categoria");
-            System.out.println("8. Listar productos sin stock");
-            System.out.println("9. Activar producto");
-            System.out.println("10. Inactivar producto");
-            System.out.println("11. Suspender producto");
-            System.out.println("0. Volver");
+            ConsolaUtils.imprimirMensajeInfo("Gestion de productos fisicos, digitales e importados.");
+            ConsolaUtils.imprimirMenuOpciones(
+                    "1. Registrar producto",
+                    "2. Modificar producto",
+                    "3. Eliminar producto",
+                    "4. Buscar producto por ID",
+                    "5. Buscar producto por codigo",
+                    "6. Listar productos",
+                    "7. Listar productos por categoria",
+                    "8. Listar productos sin stock",
+                    "9. Activar producto",
+                    "10. Inactivar producto",
+                    "11. Suspender producto",
+                    "0. Volver");
 
             opcion = entrada.leerEntero("Opcion: ");
             ejecutarOpcion(opcion);
@@ -65,10 +67,10 @@ public class ProductoMenu {
                 case 10 -> inactivarProducto();
                 case 11 -> suspenderProducto();
                 case 0 -> { }
-                default -> System.out.println("Opcion incorrecta.");
+                default -> ConsolaUtils.imprimirMensajeError("Opcion incorrecta.");
             }
         } catch (EcommerceException ex) {
-            System.out.println("Error: " + ex.getMessage());
+            ConsolaUtils.imprimirMensajeError(ex.getMessage());
         }
 
         if (opcion != 0) {
@@ -83,7 +85,7 @@ public class ProductoMenu {
         Producto producto = leerNuevoProducto();
         productoService.registrarProducto(producto);
 
-        System.out.println("Producto registrado correctamente.");
+        ConsolaUtils.imprimirMensajeExito("Producto registrado correctamente.");
         ConsolaUtils.imprimirProducto(producto);
     }
 
@@ -125,9 +127,10 @@ public class ProductoMenu {
     }
 
     private int seleccionarTipoProducto() {
-        System.out.println("1. Producto fisico");
-        System.out.println("2. Producto digital");
-        System.out.println("3. Producto importado");
+        ConsolaUtils.imprimirMenuOpciones(
+                "1. Producto fisico",
+                "2. Producto digital",
+                "3. Producto importado");
         return entrada.leerOpcion("Tipo de producto: ", 1, 3);
     }
 
@@ -159,7 +162,7 @@ public class ProductoMenu {
         }
 
         productoService.modificarProducto(producto);
-        System.out.println("Producto modificado correctamente.");
+        ConsolaUtils.imprimirMensajeExito("Producto modificado correctamente.");
     }
 
     private void eliminarProducto() {
@@ -170,9 +173,9 @@ public class ProductoMenu {
 
         if (entrada.confirmar("El producto se eliminara definitivamente.")) {
             productoService.eliminarProducto(id);
-            System.out.println("Producto eliminado correctamente.");
+            ConsolaUtils.imprimirMensajeExito("Producto eliminado correctamente.");
         } else {
-            System.out.println("Eliminacion cancelada.");
+            ConsolaUtils.imprimirMensajeInfo("Eliminacion cancelada.");
         }
     }
 
@@ -209,21 +212,21 @@ public class ProductoMenu {
         ConsolaUtils.imprimirTitulo("ACTIVAR PRODUCTO");
         int id = entrada.leerEntero("ID del producto: ");
         productoService.activarProducto(id);
-        System.out.println("Producto activado correctamente.");
+        ConsolaUtils.imprimirMensajeExito("Producto activado correctamente.");
     }
 
     private void inactivarProducto() {
         ConsolaUtils.imprimirTitulo("INACTIVAR PRODUCTO");
         int id = entrada.leerEntero("ID del producto: ");
         productoService.inactivarProducto(id);
-        System.out.println("Producto inactivado correctamente.");
+        ConsolaUtils.imprimirMensajeExito("Producto inactivado correctamente.");
     }
 
     private void suspenderProducto() {
         ConsolaUtils.imprimirTitulo("SUSPENDER PRODUCTO");
         int id = entrada.leerEntero("ID del producto: ");
         productoService.suspenderProducto(id);
-        System.out.println("Producto suspendido correctamente.");
+        ConsolaUtils.imprimirMensajeExito("Producto suspendido correctamente.");
     }
 
     private void validarCategoriasDisponibles() {

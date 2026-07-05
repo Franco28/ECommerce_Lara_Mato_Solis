@@ -15,9 +15,11 @@ public class RolMenu {
 
         do {
             ConsolaUtils.imprimirTitulo("GESTION DE ROLES");
-            System.out.println("1. Listar roles");
-            System.out.println("2. Consultar permisos de un rol");
-            System.out.println("0. Volver");
+            ConsolaUtils.imprimirMensajeInfo("Consulta rapida de roles y permisos disponibles.");
+            ConsolaUtils.imprimirMenuOpciones(
+                    "1. Listar roles",
+                    "2. Consultar permisos de un rol",
+                    "0. Volver");
 
             opcion = entrada.leerEntero("Opcion: ");
             ejecutarOpcion(opcion);
@@ -29,7 +31,7 @@ public class RolMenu {
             case 1 -> listarRoles();
             case 2 -> consultarRol();
             case 0 -> { }
-            default -> System.out.println("Opcion incorrecta.");
+            default -> ConsolaUtils.imprimirMensajeError("Opcion incorrecta.");
         }
 
         if (opcion != 0) {
@@ -47,7 +49,7 @@ public class RolMenu {
         RolSelector selector = new RolSelector(entrada);
         RolUsuario rol = selector.seleccionarRol();
 
-        System.out.println("Rol: " + rol);
-        System.out.println("Permisos: " + ConsolaUtils.describirRol(rol));
+        ConsolaUtils.imprimirEtiquetaValor("Rol", rol);
+        ConsolaUtils.imprimirEtiquetaValor("Permisos", ConsolaUtils.describirRol(rol));
     }
 }

@@ -19,15 +19,17 @@ public class CategoriaMenu {
 
         do {
             ConsolaUtils.imprimirTitulo("GESTION DE CATEGORIAS");
-            System.out.println("1. Alta de categoria");
-            System.out.println("2. Modificar categoria");
-            System.out.println("3. Eliminar categoria");
-            System.out.println("4. Buscar categoria por ID");
-            System.out.println("5. Buscar categoria por nombre");
-            System.out.println("6. Listar categorias");
-            System.out.println("7. Activar categoria");
-            System.out.println("8. Desactivar categoria");
-            System.out.println("0. Volver");
+            ConsolaUtils.imprimirMensajeInfo("Administracion de categorias y estados.");
+            ConsolaUtils.imprimirMenuOpciones(
+                    "1. Alta de categoria",
+                    "2. Modificar categoria",
+                    "3. Eliminar categoria",
+                    "4. Buscar categoria por ID",
+                    "5. Buscar categoria por nombre",
+                    "6. Listar categorias",
+                    "7. Activar categoria",
+                    "8. Desactivar categoria",
+                    "0. Volver");
 
             opcion = entrada.leerEntero("Opcion: ");
             ejecutarOpcion(opcion);
@@ -46,10 +48,10 @@ public class CategoriaMenu {
                 case 7 -> activarCategoria();
                 case 8 -> desactivarCategoria();
                 case 0 -> { }
-                default -> System.out.println("Opcion incorrecta.");
+                default -> ConsolaUtils.imprimirMensajeError("Opcion incorrecta.");
             }
         } catch (EcommerceException ex) {
-            System.out.println("Error: " + ex.getMessage());
+            ConsolaUtils.imprimirMensajeError(ex.getMessage());
         }
 
         if (opcion != 0) {
@@ -64,7 +66,7 @@ public class CategoriaMenu {
 
         Categoria categoria = categoriaService.crearCategoria(nombre, descripcion);
 
-        System.out.println("Categoria creada correctamente.");
+        ConsolaUtils.imprimirMensajeExito("Categoria creada correctamente.");
         ConsolaUtils.imprimirCategoria(categoria);
     }
 
@@ -80,7 +82,7 @@ public class CategoriaMenu {
         categoria.setDescripcion(entrada.leerTextoOpcional("Descripcion", categoria.getDescripcion()));
 
         categoriaService.modificarCategoria(categoria);
-        System.out.println("Categoria modificada correctamente.");
+        ConsolaUtils.imprimirMensajeExito("Categoria modificada correctamente.");
     }
 
     private void eliminarCategoria() {
@@ -91,9 +93,9 @@ public class CategoriaMenu {
 
         if (entrada.confirmar("La categoria se eliminara definitivamente.")) {
             categoriaService.eliminarCategoria(id);
-            System.out.println("Categoria eliminada correctamente.");
+            ConsolaUtils.imprimirMensajeExito("Categoria eliminada correctamente.");
         } else {
-            System.out.println("Eliminacion cancelada.");
+            ConsolaUtils.imprimirMensajeInfo("Eliminacion cancelada.");
         }
     }
 
@@ -118,13 +120,13 @@ public class CategoriaMenu {
         ConsolaUtils.imprimirTitulo("ACTIVAR CATEGORIA");
         int id = entrada.leerEntero("ID de categoria: ");
         categoriaService.activarCategoria(id);
-        System.out.println("Categoria activada correctamente.");
+        ConsolaUtils.imprimirMensajeExito("Categoria activada correctamente.");
     }
 
     private void desactivarCategoria() {
         ConsolaUtils.imprimirTitulo("DESACTIVAR CATEGORIA");
         int id = entrada.leerEntero("ID de categoria: ");
         categoriaService.desactivarCategoria(id);
-        System.out.println("Categoria desactivada correctamente.");
+        ConsolaUtils.imprimirMensajeExito("Categoria desactivada correctamente.");
     }
 }

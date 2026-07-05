@@ -24,13 +24,15 @@ public class InventarioMenu {
 
         do {
             ConsolaUtils.imprimirTitulo("GESTION DE INVENTARIO");
-            System.out.println("1. Ingreso de stock");
-            System.out.println("2. Egreso de stock");
-            System.out.println("3. Ajuste de stock");
-            System.out.println("4. Consultar stock");
-            System.out.println("5. Historial por producto");
-            System.out.println("6. Listar movimientos");
-            System.out.println("0. Volver");
+            ConsolaUtils.imprimirMensajeInfo("Control de stock y movimientos por producto.");
+            ConsolaUtils.imprimirMenuOpciones(
+                    "1. Ingreso de stock",
+                    "2. Egreso de stock",
+                    "3. Ajuste de stock",
+                    "4. Consultar stock",
+                    "5. Historial por producto",
+                    "6. Listar movimientos",
+                    "0. Volver");
 
             opcion = entrada.leerEntero("Opcion: ");
             ejecutarOpcion(opcion);
@@ -47,10 +49,10 @@ public class InventarioMenu {
                 case 5 -> historialPorProducto();
                 case 6 -> listarMovimientos();
                 case 0 -> { }
-                default -> System.out.println("Opcion incorrecta.");
+                default -> ConsolaUtils.imprimirMensajeError("Opcion incorrecta.");
             }
         } catch (EcommerceException ex) {
-            System.out.println("Error: " + ex.getMessage());
+            ConsolaUtils.imprimirMensajeError(ex.getMessage());
         }
 
         if (opcion != 0) {
@@ -66,7 +68,7 @@ public class InventarioMenu {
 
         InventarioMovimiento movimiento = inventarioService.ingresarStock(producto.getId(), cantidad, motivo);
 
-        System.out.println("Stock ingresado correctamente.");
+        ConsolaUtils.imprimirMensajeExito("Stock ingresado correctamente.");
         ConsolaUtils.imprimirMovimientoInventario(movimiento);
     }
 
@@ -78,7 +80,7 @@ public class InventarioMenu {
 
         InventarioMovimiento movimiento = inventarioService.egresarStock(producto.getId(), cantidad, motivo);
 
-        System.out.println("Stock egresado correctamente.");
+        ConsolaUtils.imprimirMensajeExito("Stock egresado correctamente.");
         ConsolaUtils.imprimirMovimientoInventario(movimiento);
     }
 
@@ -90,7 +92,7 @@ public class InventarioMenu {
 
         InventarioMovimiento movimiento = inventarioService.ajustarStock(producto.getId(), nuevoStock, motivo);
 
-        System.out.println("Stock ajustado correctamente.");
+        ConsolaUtils.imprimirMensajeExito("Stock ajustado correctamente.");
         ConsolaUtils.imprimirMovimientoInventario(movimiento);
     }
 
@@ -99,8 +101,8 @@ public class InventarioMenu {
         Producto producto = seleccionarProducto();
         int stock = inventarioService.consultarStock(producto.getId());
 
-        System.out.println("Producto: " + producto.getCodigo() + " - " + producto.getNombre());
-        System.out.println("Stock disponible: " + stock);
+        ConsolaUtils.imprimirEtiquetaValor("Producto", producto.getCodigo() + " - " + producto.getNombre());
+        ConsolaUtils.imprimirEtiquetaValor("Stock disponible", stock);
     }
 
     private void historialPorProducto() {

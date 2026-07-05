@@ -4,6 +4,8 @@ import java.util.Scanner;
 
 public class EntradaConsola {
 
+    private static final String PREFIJO_PROMPT = "> ";
+
     private final Scanner scanner;
 
     public EntradaConsola(Scanner scanner) {
@@ -12,39 +14,39 @@ public class EntradaConsola {
 
     public String leerTexto(String mensaje) {
         while (true) {
-            System.out.print(mensaje);
+            System.out.print(PREFIJO_PROMPT + mensaje);
             String valor = scanner.nextLine().trim();
 
             if (!valor.isEmpty()) {
                 return valor;
             }
 
-            System.out.println("El valor ingresado no puede estar vacio.");
+            System.out.println("[ERROR] El valor ingresado no puede estar vacio.");
         }
     }
 
     public String leerTextoOpcional(String mensaje, String valorActual) {
-        System.out.print(mensaje + " [actual: " + valorActual + "]: ");
+        System.out.print(PREFIJO_PROMPT + mensaje + " [actual: " + valorActual + "]: ");
         String valor = scanner.nextLine().trim();
         return valor.isEmpty() ? valorActual : valor;
     }
 
     public int leerEntero(String mensaje) {
         while (true) {
-            System.out.print(mensaje);
+            System.out.print(PREFIJO_PROMPT + mensaje);
             String valor = scanner.nextLine().trim();
 
             try {
                 return Integer.parseInt(valor);
             } catch (NumberFormatException ex) {
-                System.out.println("Debe ingresar un numero entero valido.");
+                System.out.println("[ERROR] Debe ingresar un numero entero valido.");
             }
         }
     }
 
     public int leerEnteroOpcional(String mensaje, int valorActual) {
         while (true) {
-            System.out.print(mensaje + " [actual: " + valorActual + "]: ");
+            System.out.print(PREFIJO_PROMPT + mensaje + " [actual: " + valorActual + "]: ");
             String valor = scanner.nextLine().trim();
 
             if (valor.isEmpty()) {
@@ -54,27 +56,27 @@ public class EntradaConsola {
             try {
                 return Integer.parseInt(valor);
             } catch (NumberFormatException ex) {
-                System.out.println("Debe ingresar un numero entero valido.");
+                System.out.println("[ERROR] Debe ingresar un numero entero valido.");
             }
         }
     }
 
     public double leerDecimal(String mensaje) {
         while (true) {
-            System.out.print(mensaje);
+            System.out.print(PREFIJO_PROMPT + mensaje);
             String valor = scanner.nextLine().trim().replace(',', '.');
 
             try {
                 return Double.parseDouble(valor);
             } catch (NumberFormatException ex) {
-                System.out.println("Debe ingresar un numero decimal valido.");
+                System.out.println("[ERROR] Debe ingresar un numero decimal valido.");
             }
         }
     }
 
     public double leerDecimalOpcional(String mensaje, double valorActual) {
         while (true) {
-            System.out.print(mensaje + " [actual: " + valorActual + "]: ");
+            System.out.print(PREFIJO_PROMPT + mensaje + " [actual: " + valorActual + "]: ");
             String valor = scanner.nextLine().trim().replace(',', '.');
 
             if (valor.isEmpty()) {
@@ -84,7 +86,7 @@ public class EntradaConsola {
             try {
                 return Double.parseDouble(valor);
             } catch (NumberFormatException ex) {
-                System.out.println("Debe ingresar un numero decimal valido.");
+                System.out.println("[ERROR] Debe ingresar un numero decimal valido.");
             }
         }
     }
@@ -97,7 +99,7 @@ public class EntradaConsola {
                 return opcion;
             }
 
-            System.out.println("La opcion ingresada no existe.");
+            System.out.println("[ERROR] La opcion ingresada no existe.");
         }
     }
 
@@ -108,7 +110,7 @@ public class EntradaConsola {
 
     public void pausar() {
         System.out.println();
-        System.out.print("Presione Enter para continuar...");
+        System.out.print("[ENTER] Presione Enter para continuar...");
         scanner.nextLine();
     }
 }

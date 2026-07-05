@@ -43,8 +43,10 @@ public class AutenticacionMenu {
 
     private void imprimirMenu() {
         ConsolaUtils.imprimirTitulo("ACCESO AL SISTEMA");
-        System.out.println("1. Iniciar sesion");
-        System.out.println("2. Salir");
+        ConsolaUtils.imprimirMensajeInfo("Seleccione una opcion para continuar.");
+        ConsolaUtils.imprimirMenuOpciones(
+                "1. Iniciar sesion",
+                "2. Salir");
     }
 
     private void iniciarSesion() {
@@ -55,11 +57,11 @@ public class AutenticacionMenu {
                 String email = entrada.leerTexto("Email: ");
                 String contrasenia = entrada.leerTexto("Contrasena: ");
                 Usuario usuario = autenticacionService.iniciarSesion(email, contrasenia);
-                System.out.println("Sesion iniciada: " + usuario.getNombre() + " "
+                ConsolaUtils.imprimirMensajeExito("Sesion iniciada: " + usuario.getNombre() + " "
                         + usuario.getApellido() + " - " + usuario.getRol());
                 sesionIniciada = true;
             } catch (EcommerceException ex) {
-                System.out.println("Error: " + ex.getMessage());
+                ConsolaUtils.imprimirMensajeError(ex.getMessage());
                 entrada.pausar();
             }
         }
@@ -77,10 +79,10 @@ public class AutenticacionMenu {
                 String contrasenia = entrada.leerTexto("Contrasena: ");
 
                 Usuario usuario = autenticacionService.registrarPrimerAdministrador(nombre, apellido, email, contrasenia);
-                System.out.println("Administrador inicial creado: " + usuario.getEmail());
+                ConsolaUtils.imprimirMensajeExito("Administrador inicial creado: " + usuario.getEmail());
                 registrado = true;
             } catch (EcommerceException ex) {
-                System.out.println("Error: " + ex.getMessage());
+                ConsolaUtils.imprimirMensajeError(ex.getMessage());
                 entrada.pausar();
             }
         }

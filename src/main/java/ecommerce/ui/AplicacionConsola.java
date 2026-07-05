@@ -17,7 +17,7 @@ public class AplicacionConsola {
             AutenticacionMenu autenticacionMenu = new AutenticacionMenu(serviceFactory.autenticacionService(), entrada);
             MenuPrincipal menuPrincipal = new MenuPrincipal(serviceFactory, entrada);
 
-            System.out.println("Base de datos: " + DatabaseConfig.obtenerRutaBaseDatos());
+            ConsolaUtils.imprimirMensajeInfo("Base de datos: " + DatabaseConfig.obtenerRutaBaseDatos());
 
             boolean continuar;
             do {

@@ -18,8 +18,10 @@ public class MetodoPagoSelector {
 
     private void imprimirMetodos() {
         MetodoPago[] metodos = MetodoPago.values();
+        String[] opciones = new String[metodos.length];
         for (int i = 0; i < metodos.length; i++) {
-            System.out.println((i + 1) + ". " + metodos[i]);
+            opciones[i] = (i + 1) + ". " + metodos[i];
         }
+        ConsolaUtils.imprimirMenuOpciones(opciones);
     }
 }

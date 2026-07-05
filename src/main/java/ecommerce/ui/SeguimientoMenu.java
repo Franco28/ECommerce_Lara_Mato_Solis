@@ -27,14 +27,16 @@ public class SeguimientoMenu {
 
     private void imprimirMenu() {
         ConsolaUtils.imprimirTitulo("SEGUIMIENTO DE PEDIDOS");
-        System.out.println("1. Consultar pedido por numero de orden");
-        System.out.println("2. Consultar envio por codigo de seguimiento");
-        System.out.println("3. Consultar envio asociado a una orden");
-        System.out.println("4. Consultar historial de envio por codigo");
-        System.out.println("5. Consultar historial de envio por orden");
-        System.out.println("6. Consultar fecha estimada por codigo");
-        System.out.println("7. Consultar fecha estimada por orden");
-        System.out.println("0. Volver");
+        ConsolaUtils.imprimirMensajeInfo("Consulta de pedidos y envios desde una sola pantalla.");
+        ConsolaUtils.imprimirMenuOpciones(
+                "1. Consultar pedido por numero de orden",
+                "2. Consultar envio por codigo de seguimiento",
+                "3. Consultar envio asociado a una orden",
+                "4. Consultar historial de envio por codigo",
+                "5. Consultar historial de envio por orden",
+                "6. Consultar fecha estimada por codigo",
+                "7. Consultar fecha estimada por orden",
+                "0. Volver");
     }
 
     private void ejecutarOpcion(int opcion) {
@@ -48,10 +50,10 @@ public class SeguimientoMenu {
                 case 6 -> consultarFechaEstimadaPorCodigo();
                 case 7 -> consultarFechaEstimadaPorOrden();
                 case 0 -> { }
-                default -> System.out.println("Opcion incorrecta.");
+                default -> ConsolaUtils.imprimirMensajeError("Opcion incorrecta.");
             }
         } catch (EcommerceException ex) {
-            System.out.println("Error: " + ex.getMessage());
+            ConsolaUtils.imprimirMensajeError(ex.getMessage());
         }
 
         if (opcion != 0) {

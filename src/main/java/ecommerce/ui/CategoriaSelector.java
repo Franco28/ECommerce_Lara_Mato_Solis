@@ -23,8 +23,9 @@ public class CategoriaSelector {
     }
 
     public Categoria seleccionarCategoriaOpcional(Categoria categoriaActual) {
-        System.out.println("Categoria actual: " + categoriaActual.getNombre() + " (ID " + categoriaActual.getId() + ")");
-        System.out.println("0. Mantener categoria actual");
+        ConsolaUtils.imprimirEtiquetaValor("Categoria actual",
+                categoriaActual.getNombre() + " (ID " + categoriaActual.getId() + ")");
+        ConsolaUtils.imprimirMenuOpciones("0. Mantener categoria actual");
         ConsolaUtils.imprimirCategorias(categoriaService.listarCategorias());
 
         int id = entrada.leerEntero("ID de categoria: ");

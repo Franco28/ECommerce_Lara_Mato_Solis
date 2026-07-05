@@ -18,8 +18,10 @@ public class EstadoEnvioSelector {
 
     private void imprimirEstados() {
         EstadoEnvio[] estados = EstadoEnvio.values();
+        String[] opciones = new String[estados.length];
         for (int i = 0; i < estados.length; i++) {
-            System.out.println((i + 1) + ". " + estados[i]);
+            opciones[i] = (i + 1) + ". " + estados[i];
         }
+        ConsolaUtils.imprimirMenuOpciones(opciones);
     }
 }

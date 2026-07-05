@@ -22,12 +22,56 @@ import java.util.List;
 
 public final class ConsolaUtils {
 
+    private static final int ANCHO_TERMINAL = 72;
+
     private ConsolaUtils() {
     }
 
     public static void imprimirTitulo(String titulo) {
         System.out.println();
-        System.out.println("=== " + titulo + " ===");
+        String texto = titulo == null ? "" : titulo.trim().toUpperCase();
+        int ancho = Math.max(ANCHO_TERMINAL, texto.length() + 8);
+        String linea = repetir('=', ancho);
+
+        System.out.println(linea);
+        System.out.println(centrar(texto, ancho));
+        System.out.println(linea);
+    }
+
+    public static void imprimirSubtitulo(String texto) {
+        if (texto == null || texto.isBlank()) {
+            return;
+        }
+
+        System.out.println();
+        System.out.println(texto.toUpperCase());
+        System.out.println(repetir('-', ANCHO_TERMINAL));
+    }
+
+    public static void imprimirMenuOpciones(String... opciones) {
+        for (String opcion : opciones) {
+            System.out.println("  " + opcion);
+        }
+    }
+
+    public static void imprimirMensajeInfo(String mensaje) {
+        System.out.println("[INFO] " + mensaje);
+    }
+
+    public static void imprimirMensajeExito(String mensaje) {
+        System.out.println("[OK] " + mensaje);
+    }
+
+    public static void imprimirMensajeError(String mensaje) {
+        System.out.println("[ERROR] " + mensaje);
+    }
+
+    public static void imprimirEtiquetaValor(String etiqueta, Object valor) {
+        System.out.println(etiqueta + ": " + valor);
+    }
+
+    public static void imprimirSeparador() {
+        System.out.println(repetir('-', ANCHO_TERMINAL));
     }
 
     public static void imprimirUsuarios(List<Usuario> usuarios) {
@@ -517,6 +561,20 @@ public final class ConsolaUtils {
             return "FISICO";
         }
         return producto.getClass().getSimpleName().toUpperCase();
+    }
+
+    private static String centrar(String texto, int ancho) {
+        if (texto.length() >= ancho) {
+            return texto.substring(0, ancho);
+        }
+
+        int espaciosIzquierda = (ancho - texto.length()) / 2;
+        int espaciosDerecha = ancho - texto.length() - espaciosIzquierda;
+        return repetir(' ', espaciosIzquierda) + texto + repetir(' ', espaciosDerecha);
+    }
+
+    private static String repetir(char caracter, int cantidad) {
+        return String.valueOf(caracter).repeat(Math.max(0, cantidad));
     }
 
     private static String limitar(String valor, int maximo) {
