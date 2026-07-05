@@ -1,7 +1,9 @@
 package ecommerce.service;
 
 import ecommerce.dao.factory.DAOFactory;
+import ecommerce.dao.interfaces.CalificacionDAO;
 import ecommerce.dao.interfaces.CategoriaDAO;
+import ecommerce.dao.interfaces.DevolucionDAO;
 import ecommerce.dao.interfaces.EnvioDAO;
 import ecommerce.dao.interfaces.InventarioDAO;
 import ecommerce.dao.interfaces.OrdenDAO;
@@ -25,6 +27,8 @@ public class ServiceFactory {
     private final EnvioDAO envioDAO;
     private final OrdenDAO ordenDAO;
     private final ReclamoDAO reclamoDAO;
+    private final DevolucionDAO devolucionDAO;
+    private final CalificacionDAO calificacionDAO;
 
     private final SeguridadService seguridadService;
     private final UsuarioService usuarioService;
@@ -37,6 +41,8 @@ public class ServiceFactory {
     private final EnvioService envioService;
     private final OrdenService ordenService;
     private final ReclamoService reclamoService;
+    private final DevolucionService devolucionService;
+    private final CalificacionService calificacionService;
     private final SeguimientoService seguimientoService;
     private final ReporteService reporteService;
     private final CheckoutFacade checkoutFacade;
@@ -52,6 +58,8 @@ public class ServiceFactory {
         this.envioDAO = daoFactory.crearEnvioDAO();
         this.ordenDAO = daoFactory.crearOrdenDAO();
         this.reclamoDAO = daoFactory.crearReclamoDAO();
+        this.devolucionDAO = daoFactory.crearDevolucionDAO();
+        this.calificacionDAO = daoFactory.crearCalificacionDAO();
 
         this.seguridadService = new SeguridadService();
         this.usuarioService = new UsuarioService(usuarioDAO);
@@ -64,6 +72,8 @@ public class ServiceFactory {
         this.envioService = new EnvioService(envioDAO);
         this.ordenService = new OrdenService(ordenDAO, inventarioService, carritoService, seguridadService);
         this.reclamoService = new ReclamoService(reclamoDAO, ordenService, seguridadService);
+        this.devolucionService = new DevolucionService(devolucionDAO, ordenService, productoService, seguridadService);
+        this.calificacionService = new CalificacionService(calificacionDAO, ordenService, productoService, seguridadService);
         this.seguimientoService = new SeguimientoService(ordenService, envioService);
         this.reporteService = new ReporteService(usuarioDAO, productoDAO, ordenDAO, reclamoDAO, envioDAO);
         this.checkoutFacade = new CheckoutFacade(carritoSesionService, carritoService, pagoService, envioService, ordenService);
@@ -115,6 +125,14 @@ public class ServiceFactory {
 
     public ReclamoService reclamoService() {
         return reclamoService;
+    }
+
+    public DevolucionService devolucionService() {
+        return devolucionService;
+    }
+
+    public CalificacionService calificacionService() {
+        return calificacionService;
     }
 
     public SeguimientoService seguimientoService() {

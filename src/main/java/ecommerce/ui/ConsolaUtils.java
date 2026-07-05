@@ -1,15 +1,14 @@
 package ecommerce.ui;
 
 import ecommerce.enums.RolUsuario;
+import ecommerce.model.Calificacion;
 import ecommerce.model.Carrito;
+import ecommerce.model.Devolucion;
 import ecommerce.model.Envio;
 import ecommerce.model.EnvioHistorialEstado;
 import ecommerce.model.Categoria;
 import ecommerce.model.InventarioMovimiento;
 import ecommerce.model.ItemCarrito;
-import ecommerce.model.ItemOrden;
-import ecommerce.model.OrdenCompra;
-import ecommerce.model.Pago;
 import ecommerce.model.ItemOrden;
 import ecommerce.model.OrdenCompra;
 import ecommerce.model.Pago;
@@ -376,6 +375,117 @@ public final class ConsolaUtils {
                 registro.getEstado(),
                 registro.getFecha(),
                 limitar(registro.getDescripcion(), 45));
+    }
+
+
+    public static void imprimirReclamos(List<ecommerce.model.Reclamo> reclamos) {
+        if (reclamos.isEmpty()) {
+            System.out.println("No hay reclamos registrados.");
+            return;
+        }
+
+        System.out.printf("%-24s %-28s %-25s %-14s %-18s %-35s%n",
+                "Número", "Cliente", "Orden", "Estado", "Fecha", "Motivo");
+        System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------");
+
+        for (ecommerce.model.Reclamo reclamo : reclamos) {
+            imprimirReclamoEnTabla(reclamo);
+        }
+    }
+
+    public static void imprimirReclamo(ecommerce.model.Reclamo reclamo) {
+        System.out.println("Número: " + reclamo.getNumeroReclamo());
+        System.out.println("Cliente: " + reclamo.getCliente().getNombre() + " "
+                + reclamo.getCliente().getApellido() + " - " + reclamo.getCliente().getEmail());
+        System.out.println("Orden asociada: " + reclamo.getPedidoAsociado().getNumero());
+        System.out.println("Motivo: " + reclamo.getMotivo());
+        System.out.println("Fecha: " + reclamo.getFecha());
+        System.out.println("Estado: " + reclamo.getEstado());
+    }
+
+    public static void imprimirReclamoEnTabla(ecommerce.model.Reclamo reclamo) {
+        String cliente = reclamo.getCliente().getNombre() + " " + reclamo.getCliente().getApellido();
+        System.out.printf("%-24s %-28s %-25s %-14s %-18s %-35s%n",
+                limitar(reclamo.getNumeroReclamo(), 24),
+                limitar(cliente, 28),
+                limitar(reclamo.getPedidoAsociado().getNumero(), 25),
+                reclamo.getEstado(),
+                reclamo.getFecha().toLocalDate(),
+                limitar(reclamo.getMotivo(), 35));
+    }
+
+    public static void imprimirDevoluciones(List<Devolucion> devoluciones) {
+        if (devoluciones.isEmpty()) {
+            System.out.println("No hay devoluciones registradas.");
+            return;
+        }
+
+        System.out.printf("%-5s %-28s %-25s %-14s %-18s %-35s%n",
+                "ID", "Cliente", "Producto", "Estado", "Fecha", "Motivo");
+        System.out.println("-----------------------------------------------------------------------------------------------------------------------------------");
+
+        for (Devolucion devolucion : devoluciones) {
+            imprimirDevolucionEnTabla(devolucion);
+        }
+    }
+
+    public static void imprimirDevolucion(Devolucion devolucion) {
+        System.out.println("ID: " + devolucion.getId());
+        System.out.println("Cliente: " + devolucion.getCliente().getNombre() + " "
+                + devolucion.getCliente().getApellido() + " - " + devolucion.getCliente().getEmail());
+        System.out.println("Producto: " + devolucion.getProducto().getNombre()
+                + " (" + devolucion.getProducto().getCodigo() + ")");
+        System.out.println("Motivo: " + devolucion.getMotivo());
+        System.out.println("Fecha: " + devolucion.getFecha());
+        System.out.println("Estado: " + devolucion.getEstado());
+    }
+
+    public static void imprimirDevolucionEnTabla(Devolucion devolucion) {
+        String cliente = devolucion.getCliente().getNombre() + " " + devolucion.getCliente().getApellido();
+        System.out.printf("%-5d %-28s %-25s %-14s %-18s %-35s%n",
+                devolucion.getId(),
+                limitar(cliente, 28),
+                limitar(devolucion.getProducto().getNombre(), 25),
+                devolucion.getEstado(),
+                devolucion.getFecha().toLocalDate(),
+                limitar(devolucion.getMotivo(), 35));
+    }
+
+    public static void imprimirCalificaciones(List<Calificacion> calificaciones) {
+        if (calificaciones.isEmpty()) {
+            System.out.println("No hay calificaciones registradas.");
+            return;
+        }
+
+        System.out.printf("%-5s %-28s %-25s %-10s %-18s %-40s%n",
+                "ID", "Cliente", "Producto", "Puntos", "Fecha", "Comentario");
+        System.out.println("-----------------------------------------------------------------------------------------------------------------------------------");
+
+        for (Calificacion calificacion : calificaciones) {
+            imprimirCalificacionEnTabla(calificacion);
+        }
+    }
+
+    public static void imprimirCalificacion(Calificacion calificacion) {
+        System.out.println("ID: " + calificacion.getId());
+        System.out.println("Cliente: " + calificacion.getCliente().getNombre() + " "
+                + calificacion.getCliente().getApellido() + " - " + calificacion.getCliente().getEmail());
+        System.out.println("Producto: " + calificacion.getProducto().getNombre()
+                + " (" + calificacion.getProducto().getCodigo() + ")");
+        System.out.println("Puntuación: " + calificacion.getPuntuacion());
+        System.out.println("Comentario: " + calificacion.getComentario());
+        System.out.println("Fecha: " + calificacion.getFecha());
+    }
+
+    public static void imprimirCalificacionEnTabla(Calificacion calificacion) {
+        String cliente = calificacion.getCliente().getNombre() + " " + calificacion.getCliente().getApellido();
+        System.out.printf("%-5d %-28s %-25s %-10d %-18s %-40s%n",
+                calificacion.getId(),
+                limitar(cliente, 28),
+                limitar(calificacion.getProducto().getNombre(), 25),
+                calificacion.getPuntuacion(),
+                calificacion.getFecha().toLocalDate(),
+                limitar(calificacion.getComentario(), 40));
     }
 
     public static void imprimirRoles() {

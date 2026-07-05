@@ -1,6 +1,8 @@
 package ecommerce.dao.factory;
 
+import ecommerce.dao.interfaces.CalificacionDAO;
 import ecommerce.dao.interfaces.CategoriaDAO;
+import ecommerce.dao.interfaces.DevolucionDAO;
 import ecommerce.dao.interfaces.EnvioDAO;
 import ecommerce.dao.interfaces.InventarioDAO;
 import ecommerce.dao.interfaces.OrdenDAO;
@@ -26,6 +28,10 @@ public abstract class DAOFactory {
     public abstract OrdenDAO crearOrdenDAO();
 
     public abstract ReclamoDAO crearReclamoDAO();
+
+    public abstract DevolucionDAO crearDevolucionDAO();
+
+    public abstract CalificacionDAO crearCalificacionDAO();
 
     public static DAOFactory obtenerFactory() {
         return new SQLiteDAOFactory();

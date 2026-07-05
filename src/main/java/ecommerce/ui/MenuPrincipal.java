@@ -16,6 +16,7 @@ public class MenuPrincipal {
     private final OrdenMenu ordenMenu;
     private final EnvioMenu envioMenu;
     private final SeguimientoMenu seguimientoMenu;
+    private final PostCompraMenu postCompraMenu;
 
     public MenuPrincipal(ServiceFactory serviceFactory, EntradaConsola entrada) {
         this.entrada = entrada;
@@ -42,17 +43,15 @@ public class MenuPrincipal {
                 serviceFactory.ordenService(),
                 serviceFactory.usuarioService(),
                 serviceFactory.carritoSesionService(),
-                serviceFactory.carritoSesionService(),
-                entrada);
-        this.pagoMenu = new PagoMenu(serviceFactory.pagoService(), entrada);
-        this.ordenMenu = new OrdenMenu(
-                serviceFactory.checkoutFacade(),
-                serviceFactory.ordenService(),
-                serviceFactory.usuarioService(),
-                serviceFactory.carritoSesionService(),
                 entrada);
         this.envioMenu = new EnvioMenu(serviceFactory.envioService(), entrada);
         this.seguimientoMenu = new SeguimientoMenu(serviceFactory.seguimientoService(), entrada);
+        this.postCompraMenu = new PostCompraMenu(
+                serviceFactory.reclamoService(),
+                serviceFactory.devolucionService(),
+                serviceFactory.calificacionService(),
+                serviceFactory.usuarioService(),
+                entrada);
     }
 
     public void mostrar() {
@@ -95,7 +94,8 @@ public class MenuPrincipal {
                 case 8 -> pagoMenu.mostrar();
                 case 9 -> envioMenu.mostrar();
                 case 10 -> seguimientoMenu.mostrar();
-                case 11, 12 -> moduloNoDisponible();
+                case 11 -> postCompraMenu.mostrar();
+                case 12 -> moduloNoDisponible();
                 case 13 -> System.out.println("Saliendo del sistema.");
                 default -> System.out.println("Opción incorrecta.");
             }

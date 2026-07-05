@@ -158,3 +158,8 @@ CREATE TABLE IF NOT EXISTS envio_historial_estados (
 );
 
 CREATE INDEX IF NOT EXISTS idx_envio_historial_codigo ON envio_historial_estados(envio_codigo);
+CREATE INDEX IF NOT EXISTS idx_devoluciones_cliente ON devoluciones(cliente_id);
+CREATE INDEX IF NOT EXISTS idx_devoluciones_producto ON devoluciones(producto_id);
+CREATE INDEX IF NOT EXISTS idx_devoluciones_estado ON devoluciones(estado);
+CREATE INDEX IF NOT EXISTS idx_calificaciones_cliente ON calificaciones(cliente_id);
+CREATE INDEX IF NOT EXISTS idx_calificaciones_producto ON calificaciones(producto_id);

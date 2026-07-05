@@ -496,7 +496,7 @@ El menú principal ya permite acceder a:
 8. Procesamiento de Pagos
 ```
 
-```
+
 
 ## Etapa 11 - Envíos y seguimiento de pedidos
 
@@ -576,7 +576,86 @@ El menú principal ya permite acceder a:
 10. Seguimiento de Pedidos
 ```
 
+## Etapa 12 - Reclamos, devoluciones y calificaciones
 
+Se completó el módulo de post compra dentro del menú principal.
+
+Interfaces DAO agregadas:
+
+```text
+DevolucionDAO
+CalificacionDAO
+```
+
+Implementaciones SQLite agregadas:
+
+```text
+SQLiteDevolucionDAO
+SQLiteCalificacionDAO
+```
+
+Servicios agregados:
+
+```text
+DevolucionService
+CalificacionService
+```
+
+Clases agregadas en `src/main/java/ecommerce/ui`:
+
+```text
+PostCompraMenu
+EstadoReclamoSelector
+EstadoDevolucionSelector
+```
+
+También se ampliaron:
+
+```text
+DAOFactory
+SQLiteDAOFactory
+ServiceFactory
+MenuPrincipal
+ConsolaUtils
+schema.sql
+```
+
+Funcionalidades disponibles desde consola:
+
+- Generar reclamos sobre órdenes existentes.
+- Buscar reclamos.
+- Listar reclamos.
+- Listar reclamos por estado.
+- Cambiar estado de reclamo.
+- Eliminar reclamos.
+- Solicitar devoluciones de productos comprados.
+- Buscar devoluciones.
+- Listar devoluciones.
+- Listar devoluciones por cliente, producto o estado.
+- Cambiar estado de devolución.
+- Eliminar devoluciones.
+- Calificar productos comprados.
+- Buscar calificaciones.
+- Listar calificaciones.
+- Listar calificaciones por cliente o producto.
+- Consultar promedio de calificaciones de un producto.
+- Eliminar calificaciones.
+
+El menú principal ya permite acceder a:
+
+```text
+1. Gestión de Usuarios
+2. Gestión de Roles
+3. Gestión de Productos
+4. Gestión de Categorías
+5. Gestión de Inventario
+6. Carrito de Compras
+7. Órdenes de Compra
+8. Procesamiento de Pagos
+9. Gestión de Envíos
+10. Seguimiento de Pedidos
+11. Reclamos y Devoluciones
+```
 ## Compilar el proyecto
 
 Con Java 17:
@@ -605,3 +684,4 @@ database/ecommerce.db
 
 ```bash
 mvn clean compile exec:java
+```
