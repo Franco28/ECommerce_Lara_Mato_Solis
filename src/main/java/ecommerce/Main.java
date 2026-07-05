@@ -1,6 +1,7 @@
 package ecommerce;
 
 import ecommerce.database.DatabaseConfig;
+import ecommerce.dao.factory.DAOFactory;
 import ecommerce.enums.EstadoCategoria;
 import ecommerce.enums.EstadoProducto;
 import ecommerce.enums.EstadoUsuario;
@@ -52,7 +53,10 @@ public class Main {
             System.out.printf("Total del carrito: $%.2f%n", carrito.calcularTotal());
 
             System.out.println();
-            System.out.println("Etapa 3 preparada: infraestructura SQLite agregada.");
+            DAOFactory factory = DAOFactory.obtenerFactory();
+
+            System.out.println("Etapa 4 preparada: DAO, SQLiteDAOFactory e interfaces de persistencia agregadas.");
+            System.out.println("Factory configurada: " + factory.getClass().getSimpleName());
             System.out.println("Ruta configurada de base de datos: " + DatabaseConfig.obtenerRutaBaseDatos());
             System.out.println("Para inicializar las tablas ejecutar: mvn clean compile exec:java -Dexec.mainClass=ecommerce.database.DatabaseInitializerApp");
 

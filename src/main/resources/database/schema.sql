@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS inventario_movimientos (
     tipo TEXT NOT NULL,
     fecha TEXT NOT NULL,
     observacion TEXT NOT NULL,
+    stock_resultante INTEGER NOT NULL DEFAULT 0 CHECK (stock_resultante >= 0),
     FOREIGN KEY (producto_id) REFERENCES productos(id)
 );
 

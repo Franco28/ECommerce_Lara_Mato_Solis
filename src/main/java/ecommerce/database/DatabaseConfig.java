@@ -8,9 +8,6 @@ import java.nio.file.Path;
 
 /**
  * Centraliza la configuración de la base de datos SQLite.
- *
- * La ruta puede cambiarse desde la JVM con:
- * -Decommerce.db.path=otra/ruta/ecommerce.db
  */
 public final class DatabaseConfig {
 

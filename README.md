@@ -102,15 +102,13 @@ La Etapa 3 crea el esquema inicial para:
 - devoluciones,
 - calificaciones.
 
-
-
 ## Decisión técnica
 
 Las excepciones personalizadas extienden de `EcommerceException`, que a su vez extiende de `RuntimeException`.
 
 Esto permite mantener los modelos limpios y evita llenar constructores, setters y métodos simples con firmas `throws`.
 
-En esta etapa se define la conexión, configuración y creación de tablas.
+Para persistencia se utiliza SQLite porque el enunciado del examen lo menciona como implementación válida. En esta etapa se define la conexión, configuración y creación de tablas; en la siguiente etapa se implementará el patrón DAO completo.
 
 ## Compilar el proyecto
 
@@ -121,7 +119,6 @@ $files = Get-ChildItem -Recurse -Filter *.java | ForEach-Object FullName
 javac -d out $files
 java -cp out ecommerce.Main
 ```
-
 
 ## Inicializar SQLite
 
@@ -143,4 +140,54 @@ database/ecommerce.db
 mvn clean compile exec:java
 ```
 
+## Etapa 4 - DAO y Factory
 
+La Etapa 4 agrega el patrón DAO sobre la infraestructura SQLite.
+
+Paquetes principales:
+
+```text
+src/main/java/ecommerce/dao/interfaces
+src/main/java/ecommerce/dao/sqlite
+src/main/java/ecommerce/dao/factory
+```
+
+Interfaces DAO incluidas:
+
+```text
+UsuarioDAO
+CategoriaDAO
+ProductoDAO
+InventarioDAO
+PagoDAO
+EnvioDAO
+OrdenDAO
+ReclamoDAO
+```
+
+Implementaciones SQLite incluidas:
+
+```text
+SQLiteUsuarioDAO
+SQLiteCategoriaDAO
+SQLiteProductoDAO
+SQLiteInventarioDAO
+SQLitePagoDAO
+SQLiteEnvioDAO
+SQLiteOrdenDAO
+SQLiteReclamoDAO
+```
+
+Factory incluida:
+
+```text
+DAOFactory
+SQLiteDAOFactory
+```
+
+Ejemplo de uso:
+
+```java
+DAOFactory factory = DAOFactory.obtenerFactory();
+ProductoDAO productoDAO = factory.crearProductoDAO();
+```
