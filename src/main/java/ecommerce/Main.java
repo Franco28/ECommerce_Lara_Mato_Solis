@@ -1,5 +1,6 @@
 package ecommerce;
 
+import ecommerce.database.DatabaseConfig;
 import ecommerce.enums.EstadoCategoria;
 import ecommerce.enums.EstadoProducto;
 import ecommerce.enums.EstadoUsuario;
@@ -50,9 +51,10 @@ public class Main {
             teclado.mostrarInformacion();
             System.out.printf("Total del carrito: $%.2f%n", carrito.calcularTotal());
 
-            // Prueba de Etapa 2: error propio del dominio.
-            // Descomentar para verificar manejo de excepción personalizada:
-            // carrito.agregarProducto(teclado, 100);
+            System.out.println();
+            System.out.println("Etapa 3 preparada: infraestructura SQLite agregada.");
+            System.out.println("Ruta configurada de base de datos: " + DatabaseConfig.obtenerRutaBaseDatos());
+            System.out.println("Para inicializar las tablas ejecutar: mvn clean compile exec:java -Dexec.mainClass=ecommerce.database.DatabaseInitializerApp");
 
         } catch (EcommerceException ex) {
             System.out.println("Error de negocio: " + ex.getMessage());
