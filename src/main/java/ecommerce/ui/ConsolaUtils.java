@@ -2,9 +2,12 @@ package ecommerce.ui;
 
 import ecommerce.enums.RolUsuario;
 import ecommerce.model.Carrito;
+import ecommerce.model.Envio;
 import ecommerce.model.Categoria;
 import ecommerce.model.InventarioMovimiento;
 import ecommerce.model.ItemCarrito;
+import ecommerce.model.ItemOrden;
+import ecommerce.model.OrdenCompra;
 import ecommerce.model.Pago;
 import ecommerce.model.Producto;
 import ecommerce.model.ProductoDigital;
@@ -235,6 +238,89 @@ public final class ConsolaUtils {
                 pago.getMonto(),
                 pago.getEstado(),
                 pago.getFecha().toLocalDate());
+    }
+
+
+    public static void imprimirOrdenes(List<OrdenCompra> ordenes) {
+        if (ordenes.isEmpty()) {
+            System.out.println("No hay órdenes registradas.");
+            return;
+        }
+
+        System.out.printf("%-25s %-28s %-14s %-15s %-18s %-18s%n",
+                "Número", "Cliente", "Total", "Estado", "Pago", "Fecha");
+        System.out.println("----------------------------------------------------------------------------------------------------------------");
+
+        for (OrdenCompra orden : ordenes) {
+            imprimirOrdenEnTabla(orden);
+        }
+    }
+
+    public static void imprimirOrden(OrdenCompra orden) {
+        System.out.println("Número: " + orden.getNumero());
+        System.out.println("Cliente: " + orden.getCliente().getNombre() + " "
+                + orden.getCliente().getApellido() + " - " + orden.getCliente().getEmail());
+        System.out.println("Fecha: " + orden.getFecha());
+        System.out.println("Estado: " + orden.getEstado());
+        System.out.printf("Total productos: %.2f%n", orden.getTotal());
+
+        if (orden.getPago() != null) {
+            System.out.println();
+            System.out.println("Pago asociado:");
+            imprimirPago(orden.getPago());
+        }
+
+        if (orden.getEnvio() != null) {
+            System.out.println();
+            System.out.println("Envío asociado:");
+            imprimirEnvio(orden.getEnvio());
+        }
+
+        if (orden.getProductos().isEmpty()) {
+            System.out.println("La orden no tiene productos asociados.");
+            return;
+        }
+
+        System.out.println();
+        System.out.printf("%-14s %-28s %-10s %-15s %-15s%n",
+                "Código", "Producto", "Cantidad", "Precio unit.", "Subtotal");
+        System.out.println("--------------------------------------------------------------------------------------");
+
+        for (ItemOrden item : orden.getProductos()) {
+            imprimirItemOrdenEnTabla(item);
+        }
+    }
+
+    public static void imprimirOrdenEnTabla(OrdenCompra orden) {
+        String cliente = orden.getCliente().getNombre() + " " + orden.getCliente().getApellido();
+        String pago = orden.getPago() == null ? "Sin pago" : orden.getPago().getEstado().toString();
+        System.out.printf("%-25s %-28s %-14.2f %-15s %-18s %-18s%n",
+                limitar(orden.getNumero(), 25),
+                limitar(cliente, 28),
+                orden.getTotal(),
+                orden.getEstado(),
+                pago,
+                orden.getFecha().toLocalDate());
+    }
+
+    public static void imprimirItemOrdenEnTabla(ItemOrden item) {
+        System.out.printf("%-14s %-28s %-10d %-15.2f %-15.2f%n",
+                limitar(item.getProducto().getCodigo(), 14),
+                limitar(item.getProducto().getNombre(), 28),
+                item.getCantidad(),
+                item.getPrecioUnitario(),
+                item.getSubtotal());
+    }
+
+    public static void imprimirEnvio(Envio envio) {
+        System.out.println("Código de seguimiento: " + envio.getCodigoSeguimiento());
+        System.out.println("Tipo: " + envio.getTipoEnvio());
+        System.out.println("Estado: " + envio.getEstado());
+        System.out.println("Dirección: " + envio.getDireccion());
+        System.out.println("Provincia: " + envio.getProvincia());
+        System.out.println("Ciudad: " + envio.getCiudad());
+        System.out.println("Código postal: " + envio.getCodigoPostal());
+        System.out.printf("Costo: %.2f%n", envio.getCosto());
     }
 
     public static void imprimirRoles() {

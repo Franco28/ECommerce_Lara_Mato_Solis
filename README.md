@@ -301,8 +301,6 @@ El menú principal ya permite acceder a:
 5. Gestión de Inventario
 ```
 
-
-
 ## Etapa 8 - Carrito de compras por consola
 
 Se integró el módulo de carrito dentro del menú principal.
@@ -345,7 +343,7 @@ El menú principal ya permite acceder a:
 6. Carrito de Compras
 ```
 
-El carrito utiliza productos persistidos para validar disponibilidad y stock actualizado. 
+El carrito utiliza productos persistidos para validar disponibilidad y stock actualizado. Las órdenes, pagos y envíos quedan para las siguientes partes del flujo de compra.
 
 ## Etapa 9 - Procesamiento de pagos por consola
 
@@ -407,6 +405,97 @@ El menú principal ya permite acceder a:
 6. Carrito de Compras
 8. Procesamiento de Pagos
 ```
+
+## Etapa 10 - Órdenes de compra y checkout integrado
+
+Se integró el módulo de órdenes dentro del menú principal y se agregó el flujo de checkout.
+
+Clases agregadas en `src/main/java/ecommerce/model`:
+
+```text
+DatosEnvio
+```
+
+Clases agregadas en `src/main/java/ecommerce/model/builder`:
+
+```text
+OrdenCompraBuilder
+```
+
+Clases agregadas en `src/main/java/ecommerce/service`:
+
+```text
+CarritoSesionService
+CheckoutFacade
+```
+
+Clases agregadas en `src/main/java/ecommerce/ui`:
+
+```text
+OrdenMenu
+TipoEnvioSelector
+EstadoOrdenSelector
+```
+
+También se ampliaron:
+
+```text
+ServiceFactory
+CarritoMenu
+MenuPrincipal
+ConsolaUtils
+OrdenService
+```
+
+Funcionalidades disponibles desde consola para órdenes:
+
+- Confirmar compra desde el carrito activo.
+- Procesar pago usando Strategy.
+- Crear envío asociado.
+- Generar orden de compra.
+- Persistir orden e ítems.
+- Descontar stock automáticamente.
+- Vaciar el carrito luego de confirmar la compra.
+- Buscar orden por número.
+- Listar órdenes.
+- Listar órdenes por cliente.
+- Listar órdenes por estado.
+- Actualizar estado de orden.
+- Eliminar orden.
+
+El flujo integrado queda así:
+
+```text
+Cliente activo
+    ↓
+Carrito con productos
+    ↓
+CheckoutFacade
+    ↓
+Procesamiento de pago
+    ↓
+Creación de envío
+    ↓
+Generación de orden
+    ↓
+Egreso de stock
+    ↓
+Carrito vacío
+```
+
+El menú principal ya permite acceder a:
+
+```text
+1. Gestión de Usuarios
+2. Gestión de Roles
+3. Gestión de Productos
+4. Gestión de Categorías
+5. Gestión de Inventario
+6. Carrito de Compras
+7. Órdenes de Compra
+8. Procesamiento de Pagos
+```
+
 ## Compilar el proyecto
 
 Con Java 17:

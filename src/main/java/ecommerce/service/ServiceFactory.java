@@ -32,11 +32,13 @@ public class ServiceFactory {
     private final ProductoService productoService;
     private final InventarioService inventarioService;
     private final CarritoService carritoService;
+    private final CarritoSesionService carritoSesionService;
     private final PagoService pagoService;
     private final EnvioService envioService;
     private final OrdenService ordenService;
     private final ReclamoService reclamoService;
     private final ReporteService reporteService;
+    private final CheckoutFacade checkoutFacade;
 
     public ServiceFactory(DAOFactory daoFactory) {
         ValidadorDominio.validarObjetoObligatorio(daoFactory, "La fábrica de DAOs es obligatoria.");
@@ -56,11 +58,13 @@ public class ServiceFactory {
         this.productoService = new ProductoService(productoDAO, categoriaDAO);
         this.inventarioService = new InventarioService(productoDAO, inventarioDAO);
         this.carritoService = new CarritoService(productoDAO, seguridadService);
+        this.carritoSesionService = new CarritoSesionService(carritoService);
         this.pagoService = new PagoService(pagoDAO);
         this.envioService = new EnvioService(envioDAO);
         this.ordenService = new OrdenService(ordenDAO, inventarioService, carritoService, seguridadService);
         this.reclamoService = new ReclamoService(reclamoDAO, ordenService, seguridadService);
         this.reporteService = new ReporteService(usuarioDAO, productoDAO, ordenDAO, reclamoDAO, envioDAO);
+        this.checkoutFacade = new CheckoutFacade(carritoSesionService, carritoService, pagoService, envioService, ordenService);
     }
 
     public static ServiceFactory crearConSQLite() {
@@ -91,6 +95,10 @@ public class ServiceFactory {
         return carritoService;
     }
 
+    public CarritoSesionService carritoSesionService() {
+        return carritoSesionService;
+    }
+
     public PagoService pagoService() {
         return pagoService;
     }
@@ -109,5 +117,9 @@ public class ServiceFactory {
 
     public ReporteService reporteService() {
         return reporteService;
+    }
+
+    public CheckoutFacade checkoutFacade() {
+        return checkoutFacade;
     }
 }

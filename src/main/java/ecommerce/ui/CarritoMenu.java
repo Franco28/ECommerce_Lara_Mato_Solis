@@ -5,12 +5,11 @@ import ecommerce.model.Carrito;
 import ecommerce.model.Producto;
 import ecommerce.model.Usuario;
 import ecommerce.service.CarritoService;
+import ecommerce.service.CarritoSesionService;
 import ecommerce.service.ProductoService;
 import ecommerce.service.UsuarioService;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class CarritoMenu {
 
@@ -18,16 +17,16 @@ public class CarritoMenu {
     private final ProductoService productoService;
     private final EntradaConsola entrada;
     private final ClienteSelector clienteSelector;
-    private final Map<Integer, Carrito> carritosActivos;
+    private final CarritoSesionService carritoSesionService;
     private Usuario clienteActual;
 
     public CarritoMenu(CarritoService carritoService, ProductoService productoService,
-            UsuarioService usuarioService, EntradaConsola entrada) {
+            UsuarioService usuarioService, CarritoSesionService carritoSesionService, EntradaConsola entrada) {
         this.carritoService = carritoService;
         this.productoService = productoService;
         this.entrada = entrada;
         this.clienteSelector = new ClienteSelector(usuarioService, entrada);
-        this.carritosActivos = new HashMap<>();
+        this.carritoSesionService = carritoSesionService;
     }
 
     public void mostrar() {
@@ -188,6 +187,6 @@ public class CarritoMenu {
             clienteActual = clienteSelector.seleccionarClienteActivo();
         }
 
-        return carritosActivos.computeIfAbsent(clienteActual.getId(), id -> carritoService.crearCarrito(clienteActual));
+        return carritoSesionService.obtenerOCrearCarrito(clienteActual);
     }
 }
