@@ -301,8 +301,6 @@ El menú principal ya permite acceder a:
 5. Gestión de Inventario
 ```
 
-
-
 ## Etapa 8 - Carrito de compras por consola
 
 Se integró el módulo de carrito dentro del menú principal.
@@ -347,6 +345,238 @@ El menú principal ya permite acceder a:
 
 El carrito utiliza productos persistidos para validar disponibilidad y stock actualizado. Las órdenes, pagos y envíos quedan para las siguientes partes del flujo de compra.
 
+## Etapa 9 - Procesamiento de pagos por consola
+
+Se integró el módulo de pagos dentro del menú principal.
+
+Paquete agregado:
+
+```text
+src/main/java/ecommerce/payment
+```
+
+Clases agregadas:
+
+```text
+ProcesadorPagoFactory
+ProcesadorTarjetaCredito
+ProcesadorTarjetaDebito
+ProcesadorTransferenciaBancaria
+ProcesadorBilleteraVirtual
+ProcesadorPagoContraEntrega
+```
+
+Clases agregadas en `src/main/java/ecommerce/ui`:
+
+```text
+PagoMenu
+MetodoPagoSelector
+```
+
+También se ampliaron:
+
+```text
+PagoService
+MenuPrincipal
+ConsolaUtils
+```
+
+Funcionalidades disponibles desde consola para pagos:
+
+- Procesar pago mediante Strategy.
+- Registrar pago pendiente.
+- Buscar pago por ID.
+- Listar pagos.
+- Aprobar pago pendiente.
+- Rechazar pago.
+- Cancelar pago.
+- Eliminar pago.
+
+El procesamiento no depende de condicionales por texto. Cada método de pago tiene su propio procesador concreto y todos implementan la interfaz `ProcesadorPago`.
+
+El menú principal ya permite acceder a:
+
+```text
+1. Gestión de Usuarios
+2. Gestión de Roles
+3. Gestión de Productos
+4. Gestión de Categorías
+5. Gestión de Inventario
+6. Carrito de Compras
+8. Procesamiento de Pagos
+```
+
+## Etapa 10 - Órdenes de compra y checkout integrado
+
+Se integró el módulo de órdenes dentro del menú principal y se agregó el flujo de checkout.
+
+Clases agregadas en `src/main/java/ecommerce/model`:
+
+```text
+DatosEnvio
+```
+
+Clases agregadas en `src/main/java/ecommerce/model/builder`:
+
+```text
+OrdenCompraBuilder
+```
+
+Clases agregadas en `src/main/java/ecommerce/service`:
+
+```text
+CarritoSesionService
+CheckoutFacade
+```
+
+Clases agregadas en `src/main/java/ecommerce/ui`:
+
+```text
+OrdenMenu
+TipoEnvioSelector
+EstadoOrdenSelector
+```
+
+También se ampliaron:
+
+```text
+ServiceFactory
+CarritoMenu
+MenuPrincipal
+ConsolaUtils
+OrdenService
+```
+
+Funcionalidades disponibles desde consola para órdenes:
+
+- Confirmar compra desde el carrito activo.
+- Procesar pago usando Strategy.
+- Crear envío asociado.
+- Generar orden de compra.
+- Persistir orden e ítems.
+- Descontar stock automáticamente.
+- Vaciar el carrito luego de confirmar la compra.
+- Buscar orden por número.
+- Listar órdenes.
+- Listar órdenes por cliente.
+- Listar órdenes por estado.
+- Actualizar estado de orden.
+- Eliminar orden.
+
+El flujo integrado queda así:
+
+```text
+Cliente activo
+    ↓
+Carrito con productos
+    ↓
+CheckoutFacade
+    ↓
+Procesamiento de pago
+    ↓
+Creación de envío
+    ↓
+Generación de orden
+    ↓
+Egreso de stock
+    ↓
+Carrito vacío
+```
+
+El menú principal ya permite acceder a:
+
+```text
+1. Gestión de Usuarios
+2. Gestión de Roles
+3. Gestión de Productos
+4. Gestión de Categorías
+5. Gestión de Inventario
+6. Carrito de Compras
+7. Órdenes de Compra
+8. Procesamiento de Pagos
+```
+
+```
+
+## Etapa 11 - Envíos y seguimiento de pedidos
+
+Se integraron los módulos de gestión de envíos y seguimiento dentro del menú principal.
+
+Clases agregadas en `src/main/java/ecommerce/model`:
+
+```text
+EnvioHistorialEstado
+```
+
+Clases agregadas en `src/main/java/ecommerce/service`:
+
+```text
+SeguimientoService
+```
+
+Clases agregadas en `src/main/java/ecommerce/ui`:
+
+```text
+EnvioMenu
+SeguimientoMenu
+EstadoEnvioSelector
+```
+
+También se ampliaron:
+
+```text
+EnvioDAO
+SQLiteEnvioDAO
+EnvioService
+ServiceFactory
+MenuPrincipal
+ConsolaUtils
+schema.sql
+```
+
+Funcionalidades disponibles desde consola para envíos:
+
+- Crear envío manual.
+- Buscar envío por código de seguimiento.
+- Listar envíos.
+- Listar envíos por estado.
+- Actualizar estado de envío.
+- Consultar historial de estados.
+- Consultar fecha estimada de entrega.
+- Eliminar envío.
+
+Funcionalidades disponibles desde consola para seguimiento:
+
+- Consultar pedido por número de orden.
+- Consultar envío por código de seguimiento.
+- Consultar envío asociado a una orden.
+- Consultar historial de envío por código.
+- Consultar historial de envío por orden.
+- Consultar fecha estimada por código.
+- Consultar fecha estimada por orden.
+
+Se agregó persistencia de historial de estados mediante la tabla:
+
+```text
+envio_historial_estados
+```
+
+El menú principal ya permite acceder a:
+
+```text
+1. Gestión de Usuarios
+2. Gestión de Roles
+3. Gestión de Productos
+4. Gestión de Categorías
+5. Gestión de Inventario
+6. Carrito de Compras
+7. Órdenes de Compra
+8. Procesamiento de Pagos
+9. Gestión de Envíos
+10. Seguimiento de Pedidos
+```
+
+
 ## Compilar el proyecto
 
 Con Java 17:
@@ -375,4 +605,3 @@ database/ecommerce.db
 
 ```bash
 mvn clean compile exec:java
-```

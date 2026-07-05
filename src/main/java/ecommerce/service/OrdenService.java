@@ -8,11 +8,10 @@ import ecommerce.exception.CarritoVacioException;
 import ecommerce.exception.DatosInvalidosException;
 import ecommerce.model.Carrito;
 import ecommerce.model.Envio;
-import ecommerce.model.ItemCarrito;
-import ecommerce.model.ItemOrden;
 import ecommerce.model.OrdenCompra;
 import ecommerce.model.Pago;
 import ecommerce.model.Usuario;
+import ecommerce.model.builder.OrdenCompraBuilder;
 import ecommerce.util.ValidadorDominio;
 
 import java.time.LocalDateTime;
@@ -53,21 +52,16 @@ public class OrdenService {
     public OrdenCompra crearOrdenDesdeCarrito(Carrito carrito, Pago pago, Envio envio) {
         validarDatosDeCompra(carrito, pago, envio);
 
-        OrdenCompra orden = new OrdenCompra(
-                generarNumeroOrden(),
-                carrito.getCliente(),
-                LocalDateTime.now(),
-                EstadoOrden.PAGADA);
+        OrdenCompra orden = new OrdenCompraBuilder()
+                .conNumero(generarNumeroOrden())
+                .conCliente(carrito.getCliente())
+                .conFecha(LocalDateTime.now())
+                .conEstado(EstadoOrden.PAGADA)
+                .conPago(pago)
+                .conEnvio(envio)
+                .desdeCarrito(carrito)
+                .build();
 
-        for (ItemCarrito itemCarrito : carrito.getItems()) {
-            orden.agregarItem(new ItemOrden(
-                    itemCarrito.getProducto(),
-                    itemCarrito.getCantidad(),
-                    itemCarrito.getPrecioUnitario()));
-        }
-
-        orden.asociarPago(pago);
-        orden.asociarEnvio(envio);
         ordenDAO.guardar(orden);
 
         descontarStockPorOrden(orden);

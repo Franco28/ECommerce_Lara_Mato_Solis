@@ -4,15 +4,15 @@ import ecommerce.dao.interfaces.PagoDAO;
 import ecommerce.enums.EstadoPago;
 import ecommerce.enums.MetodoPago;
 import ecommerce.exception.DatosInvalidosException;
+import ecommerce.exception.PagoRechazadoException;
+import ecommerce.interfaces.ProcesadorPago;
 import ecommerce.model.Pago;
+import ecommerce.payment.ProcesadorPagoFactory;
 import ecommerce.util.ValidadorDominio;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * Servicio de pagos. Registra y cambia estados.
- */
 public class PagoService {
 
     private final PagoDAO pagoDAO;
@@ -20,6 +20,28 @@ public class PagoService {
     public PagoService(PagoDAO pagoDAO) {
         this.pagoDAO = ValidadorDominio.validarObjetoObligatorio(pagoDAO,
                 "El DAO de pagos es obligatorio.");
+    }
+
+    public Pago procesarPago(MetodoPago metodoPago, double monto) {
+        validarPago(metodoPago, monto);
+
+        ProcesadorPago procesadorPago = ProcesadorPagoFactory.crearProcesador(metodoPago);
+        boolean aprobado = procesadorPago.procesarPago(monto);
+
+        Pago pago = new Pago(
+                0,
+                metodoPago,
+                monto,
+                aprobado ? EstadoPago.APROBADO : EstadoPago.RECHAZADO,
+                LocalDateTime.now());
+
+        pagoDAO.guardar(pago);
+
+        if (!aprobado) {
+            throw new PagoRechazadoException("El pago fue rechazado por el procesador seleccionado.");
+        }
+
+        return pago;
     }
 
     public Pago registrarPagoPendiente(MetodoPago metodoPago, double monto) {
@@ -32,6 +54,13 @@ public class PagoService {
     public Pago registrarPagoAprobado(MetodoPago metodoPago, double monto) {
         validarPago(metodoPago, monto);
         Pago pago = new Pago(0, metodoPago, monto, EstadoPago.APROBADO, LocalDateTime.now());
+        pagoDAO.guardar(pago);
+        return pago;
+    }
+
+    public Pago registrarPagoRechazado(MetodoPago metodoPago, double monto) {
+        validarPago(metodoPago, monto);
+        Pago pago = new Pago(0, metodoPago, monto, EstadoPago.RECHAZADO, LocalDateTime.now());
         pagoDAO.guardar(pago);
         return pago;
     }
@@ -61,6 +90,11 @@ public class PagoService {
         Pago pago = buscarPorId(id);
         pago.cancelar();
         pagoDAO.actualizar(pago);
+    }
+
+    public void eliminarPago(int id) {
+        ValidadorDominio.validarEnteroMayorACero(id, "El ID del pago debe ser mayor a cero.");
+        pagoDAO.eliminar(id);
     }
 
     public void validarPagoAprobado(Pago pago) {

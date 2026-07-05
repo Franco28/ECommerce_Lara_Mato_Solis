@@ -147,3 +147,14 @@ CREATE INDEX IF NOT EXISTS idx_ordenes_cliente ON ordenes(cliente_id);
 CREATE INDEX IF NOT EXISTS idx_ordenes_estado ON ordenes(estado);
 CREATE INDEX IF NOT EXISTS idx_reclamos_estado ON reclamos(estado);
 CREATE INDEX IF NOT EXISTS idx_envios_estado ON envios(estado);
+
+CREATE TABLE IF NOT EXISTS envio_historial_estados (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    envio_codigo TEXT NOT NULL,
+    estado TEXT NOT NULL,
+    fecha TEXT NOT NULL,
+    descripcion TEXT NOT NULL,
+    FOREIGN KEY (envio_codigo) REFERENCES envios(codigo_seguimiento)
+);
+
+CREATE INDEX IF NOT EXISTS idx_envio_historial_codigo ON envio_historial_estados(envio_codigo);
